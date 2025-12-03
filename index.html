@@ -3,383 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بـوكـس السعـادة - نسخة خاصة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>VIP Couples | تجربة النخبة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         :root {
-            --primary: #e50914; /* أحمر ناري */
-            --dark: #141414; /* أسود فحمي */
-            --gold: #d4af37; /* ذهبي */
-            --text: #ffffff;
+            --primary: #ff0055; /* أحمر نيون */
+            --gold: #fbbf24;
+            --dark-glass: rgba(0, 0, 0, 0.85);
+            --light-glass: rgba(255, 255, 255, 0.1);
+            --border-glow: 0 0 15px var(--primary);
         }
 
-        * { box-sizing: border-box; touch-action: manipulation; }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
-            padding: 0;
-            background-color: var(--dark);
-            color: var(--text);
-            font-family: 'Tajawal', sans-serif;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background: #000 url('assets/images/main_bg.jpg') no-repeat center center/cover;
+            background-attachment: fixed;
+            font-family: 'Cairo', sans-serif;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* الشاشات (Screens) */
+        /* المؤثرات الخلفية (Overlay) */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), #000);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* الشاشات */
         .screen {
             display: none;
             width: 100%;
-            max-width: 480px; /* حجم الموبايل */
+            height: 100%;
             padding: 20px;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
+            overflow-y: auto;
         }
+        .screen.active { display: flex; flex-direction: column; align-items: center; }
 
-        .screen.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* العناصر */
-        h1 { color: var(--primary); font-size: 2rem; text-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
-        .btn {
-            background: linear-gradient(45deg, var(--primary), #b0060e);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+        /* الأزرار البريميوم */
+        .btn-vip {
+            background: linear-gradient(135deg, var(--primary), #990033);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 40px;
             border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 900;
+            box-shadow: 0 5px 20px rgba(255, 0, 85, 0.5);
+            transition: 0.3s;
             cursor: pointer;
-            width: 100%;
-            margin: 10px 0;
-            font-family: 'Tajawal', sans-serif;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
-            transition: transform 0.2s;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-secondary { background: #333; box-shadow: none; }
-        
-        input {
+        .btn-vip:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(255, 0, 85, 0.3); }
+
+        /* كروت القائمة الرئيسية (Dashboard Cards) */
+        .games-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
             width: 100%;
+            max-width: 500px;
+            padding-bottom: 50px;
+        }
+
+        .game-thumb {
+            background: var(--dark-glass);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--light-glass);
+            position: relative;
+            height: 160px;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-thumb img {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s;
+        }
+        .game-thumb:hover img { opacity: 0.3; transform: scale(1.1); }
+        
+        .game-info {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
             padding: 15px;
-            margin: 20px 0;
-            border-radius: 10px;
-            border: 2px solid var(--primary);
+            background: linear-gradient(to top, black, transparent);
+        }
+        .game-title { font-size: 1.4rem; font-weight: bold; color: var(--gold); }
+        .game-desc { font-size: 0.9rem; color: #ddd; }
+
+        /* شاشة المقدمة (Intro Modal) */
+        .modal-glass {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+        }
+        .modal-glass.show { display: flex; animation: fadeIn 0.5s; }
+
+        /* شاشة اللعب والكروت */
+        .game-area {
+            width: 100%; max-width: 450px;
+            display: flex; flex-direction: column; align-items: center;
+            margin-top: 20px;
+        }
+
+        .card-wrapper {
+            width: 100%;
+            height: 450px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .the-card {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden;
+            border-radius: 25px;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 20px;
+            border: 2px solid var(--gold);
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: #111 url('assets/images/card_back_pattern.jpg'); /* ظهر الكارت */
+            background-size: cover;
+        }
+
+        .card-back {
             background: #222;
+            transform: rotateY(180deg);
+            text-align: center;
+        }
+        
+        /* صورة التحدي داخل الكارت */
+        .challenge-img {
+            width: 100%;
+            height: 60%;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--primary);
+        }
+
+        .challenge-text {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            font-weight: bold;
+        }
+
+        .flipped { transform: rotateY(180deg); }
+
+        /* حقل الإدخال */
+        .login-input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--primary);
+            padding: 15px;
+            border-radius: 30px;
             color: white;
             text-align: center;
             font-size: 1.2rem;
-        }
-
-        /* كارت اللعبة */
-        .card-container {
-            perspective: 1000px;
-            margin: 30px auto;
-            height: 300px;
-            width: 100%;
-        }
-        
-        .game-card {
-            background: linear-gradient(135deg, #222, #1a1a1a);
-            border: 2px solid var(--gold);
-            border-radius: 20px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-            position: relative;
-        }
-
-        .card-text { font-size: 1.5rem; line-height: 1.6; font-weight: bold; }
-        .card-type { position: absolute; top: 10px; right: 15px; color: var(--gold); font-size: 0.9rem; }
-
-        /* منطقة الخربشة */
-        .scratch-container {
-            position: relative;
-            width: 300px;
-            height: 150px;
-            margin: 20px auto;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px dashed var(--gold);
-        }
-        
-        .scratch-prize {
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            position: absolute;
-            top: 0;
-            left: 0;
-            padding: 10px;
-        }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            cursor: crosshair;
+            width: 80%;
+            margin-bottom: 20px;
+            outline: none;
         }
 
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="screen active">
-        <h1>🔒 منطقة خاصة</h1>
-        <p>أدخل كود التفعيل للدخول</p>
-        <input type="text" id="access-code" placeholder="اكتب الكود هنا">
-        <button class="btn" onclick="checkCode()">دخول</button>
-        <p id="error-msg" style="color: red; display: none;">الكود غير صحيح!</p>
-    </div>
+    <div class="overlay"></div>
+    
+    <audio id="snd-bg" loop> <source src="assets/sounds/bg_music.mp3" type="audio/mpeg"> </audio>
+    <audio id="snd-click"> <source src="assets/sounds/click.mp3" type="audio/mpeg"> </audio>
+    <audio id="snd-flip"> <source src="assets/sounds/whoosh.mp3" type="audio/mpeg"> </audio>
+    <audio id="snd-win"> <source src="assets/sounds/win.mp3" type="audio/mpeg"> </audio>
 
-    <div id="dashboard-screen" class="screen">
-        <h1>🔥 اختر اللعبة</h1>
-        <button class="btn" onclick="startGame('game1')">1. شوق أو ذوق (Truth or Dare)</button>
-        <button class="btn" onclick="startGame('game2')">2. أوضاع وأحكام (Hot Actions)</button>
-        <button class="btn" onclick="startGame('game3')">3. بوس أو دوس (Fun Questions)</button>
-        <button class="btn" onclick="startGame('game4')">4. هل لبيوح بـح (Deep Talk)</button>
-        <button class="btn" style="background: linear-gradient(45deg, var(--gold), #967bb6);" onclick="startScratch()">5. خربش واكسب (Rewards)</button>
-    </div>
+    <div class="container">
 
-    <div id="game-screen" class="screen">
-        <h2 id="game-title" style="color: var(--gold)"></h2>
-        
-        <div class="card-container">
-            <div class="game-card" id="card-display">
-                <span class="card-type" id="card-tag">المستوى الأول</span>
-                <p class="card-text" id="card-content">اضغط "سحب كارت" للبدء</p>
+        <div id="screen-login" class="screen active" style="justify-content: center;">
+            <img src="assets/images/logo.png" style="width: 150px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--primary));" alt="Logo">
+            <h1 style="color:var(--gold); margin-bottom: 40px;">منطقة كبار الشخصيات</h1>
+            <input type="text" class="login-input" id="passcode" placeholder="أدخل الكود السري">
+            <button class="btn-vip" onclick="attemptLogin()">دخول 🔓</button>
+        </div>
+
+        <div id="screen-dashboard" class="screen">
+            <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0;">اختر تجربتك 🔥</h2>
+                <div onclick="toggleMusic()" style="font-size:1.5rem; cursor:pointer;">🎵</div>
+            </div>
+            
+            <div class="games-grid">
+                <div class="game-thumb" onclick="openGameIntro('game1')">
+                    <img src="https://images.unsplash.com/photo-1516726817505-f5ed825624d8?q=80&w=600" alt="Truth or Dare">
+                    <div class="game-info">
+                        <div class="game-title">شوق أو ذوق</div>
+                        <div class="game-desc">جرأة وصراحة لأبعد الحدود</div>
+                    </div>
+                </div>
+                <div class="game-thumb" onclick="openGameIntro('game2')">
+                    <img src="https://images.unsplash.com/photo-1570570532296-e2652b475962?q=80&w=600" alt="Positions">
+                    <div class="game-info">
+                        <div class="game-title">أوضاع وأحكام</div>
+                        <div class="game-desc">تحديات جسدية ساخنة</div>
+                    </div>
+                </div>
+                <div class="game-thumb" onclick="startScratchGame()">
+                    <img src="https://images.unsplash.com/photo-1605218427306-6354db696faa?q=80&w=600" alt="Rewards">
+                    <div class="game-info">
+                        <div class="game-title">خربش واكسب</div>
+                        <div class="game-desc">جوايز فورية ومفاجآت</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <button class="btn" onclick="drawCard()">سحب كارت عشوائي 🎲</button>
-        <button class="btn btn-secondary" onclick="showScreen('dashboard-screen')">رجوع للقائمة</button>
-    </div>
-
-    <div id="scratch-screen" class="screen">
-        <h2 style="color: var(--gold)">خربش واكسب 💅</h2>
-        <p>حرك صباعك على المربع الرمادي عشان تكشف الجايزة!</p>
-        
-        <div class="scratch-container" id="scratch-area">
-            <div class="scratch-prize" id="prize-text">???</div>
-            <canvas id="scratch-canvas"></canvas>
+        <div id="modal-intro" class="modal-glass">
+            <img id="intro-img" src="" style="width: 120px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 20px;">
+            <h2 id="intro-title" style="color: var(--primary); font-size: 2rem;"></h2>
+            <p id="intro-desc" style="font-size: 1.1rem; line-height: 1.6; max-width: 300px;"></p>
+            <button class="btn-vip" onclick="startGameSession()">ابدأ التحدي 🚀</button>
+            <button style="background:none; border:none; color:#999; margin-top:15px; cursor:pointer;" onclick="closeIntro()">إلغاء</button>
         </div>
 
-        <button class="btn" onclick="resetScratch()">كارت جديد 🔄</button>
-        <button class="btn btn-secondary" onclick="showScreen('dashboard-screen')">رجوع للقائمة</button>
+        <div id="screen-game" class="screen">
+            <div class="game-area">
+                <div class="card-wrapper">
+                    <div class="the-card" id="active-card">
+                        <div class="card-face card-front">
+                            <h1 style="font-size: 4rem; color: var(--gold);">?</h1>
+                            <p style="color: #999;">اضغط للكشف</p>
+                        </div>
+                        <div class="card-face card-back">
+                            <img id="challenge-img" class="challenge-img" src="" alt="Challenge">
+                            <p id="challenge-txt" class="challenge-text"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-vip" onclick="nextCard()">سحب كارت جديد 🃏</button>
+                <button class="btn-vip btn-secondary" style="background:#333; margin-top:0;" onclick="goHome()">إنهاء اللعبة 🏠</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // --- 1. البيانات (الداتا بيز) ---
-        // يمكنك هنا إضافة 100 سؤال لكل مصفوفة بسهولة
-        
-        const gamesData = {
-            game1: { // شوق أو ذوق
+        // --- البيانات (Data Structure) ---
+        // هنا يمكنك إضافة صورة خاصة لكل سؤال
+        const db = {
+            game1: {
                 title: "شوق أو ذوق",
+                desc: "اللعبة دي محتاجة صراحة وجرأة. الكروت متقسمة لنوعين: سؤال محرج أو فعل جريء. ممنوع الرفض!",
+                img: "assets/images/game1_icon.jpg",
                 content: [
-                    "شوق: إيه أكتر جزء في جسمي بيغريك وماقولتليش عليه؟",
-                    "ذوق: بوس شريكك بوسة سينمائية لمدة 10 ثواني.",
-                    "شوق: إمتى أخر مرة حسيت بالغيرة عليا ومبينتش؟",
-                    "ذوق: اعمل مساج لرقبة وكتف شريكك لمدة 3 دقايق.",
-                    "شوق: أوصف علاقتنا بكلمة واحدة بس؟",
-                    "ذوق: ارقص سلو مع شريكك بدون موسيقى.",
-                    "شوق: إيه الفانتزي اللي نفسك نجربه سوا؟",
-                    "ذوق: شيل شريكك وبوسه من جبينه.",
-                    "شوق: لو مكاني.. إيه الحاجة اللي هتطلبها مني؟",
-                    "ذوق: غمض عين شريكك وأكله قطعة فاكهة.",
-                    // ... انسخ باقي الـ 100 هنا
+                    { txt: "أوصف أكتر مكان في جسمي بيثيرك؟", img: "assets/images/game1/1.jpg" },
+                    { txt: "بوس شريكك بوسة فرنسية لمدة دقيقة", img: "assets/images/game1/2.jpg" },
+                    // ضف باقي الـ 100 سؤال هنا
+                    // إذا لم توجد صورة للسؤال، استخدم صورة عامة
+                    { txt: "ارقص سلو بدون موسيقى", img: "assets/images/game1/default.jpg" } 
                 ]
             },
-            game2: { // أوضاع وأحكام
+            game2: {
                 title: "أوضاع وأحكام",
+                desc: "تحديات جسدية مباشرة لتسخين الأجواء. استعدوا لتجربة حاجات جديدة!",
+                img: "assets/images/game2_icon.jpg",
                 content: [
-                    "المرايا: العلاقة النهاردة تكون قدام المرايا.. اتفرجوا على بعض.",
-                    "السيطرة: شريكك هو الملك النهاردة.. نفذ أوامره لمدة ساعة.",
-                    "المساج: استخدم زيت واعمل مساج كامل للجسم.",
-                    "الحواس: بوس شريكك في 5 أماكن مختلفة عشوائية.",
-                    "صامت: ممنوع الكلام نهائي لمدة 15 دقيقة.. تلامس بس.",
-                    "الشاور: اللعبة تنتقل للحمام.. شاور دافي سوا.",
-                    "غميضة: غمض عينك وشريكك يستخدم تلجة على جسمك.",
-                    "بصمة: سيب علامة (Love Bite) في مكان مخفي.",
-                    "تقييد: اربط ايد شريكك بايشارب واستمتع بالسيطرة.",
-                    "عرض خاص: اقلع قطعة من لبسك ببطء (Striptease).",
-                    // ... انسخ باقي الـ 100 هنا
+                    { txt: "مساج بالزيت للرقبة", img: "assets/images/game2/1.jpg" },
+                    { txt: "اربط عين شريكك واستخدم التلج", img: "assets/images/game2/2.jpg" }
                 ]
-            },
-            game3: { // بوس أو دوس
-                title: "بوس أو دوس",
-                content: [
-                    "مين قال 'بحبك' للأول؟ (الغلطان عليه بوسة)",
-                    "لو كسبنا مليون جنيه، أول حاجة هنشتريها إيه؟",
-                    "إيه أكتر أكلة أنا بحبها؟ (الغلطان يقلع قطعة لبس)",
-                    "مين بياخد وقت أطول في الحمام؟",
-                    "إمتى كان أول ديت لينا؟",
-                    "مين فينا صوته أعلى وقت العلاقة؟",
-                    "إيه أغرب مكان عملنا فيه علاقة؟",
-                    "هل عمرك مثلت إنك مبسوط عشان نخلص؟",
-                    "إيه أكتر جزء في جسمي نفسك تعضه دلوقتي؟",
-                    "مين بيصالح التاني الأول دايماً؟",
-                     // ... انسخ باقي الـ 100 هنا
-                ]
-            },
-            game4: { // هل لبيوح
-                title: "هل لبيوح بـح",
-                content: [
-                    "إيه أكتر تصرف حسسك إني بحبك بجد؟",
-                    "إيه الحاجة اللي بتخوفك في المستقبل؟",
-                    "أوصفني بـ 3 صفات حلوة وصفة عايزني أغيرها.",
-                    "إيه أكتر ذكرى معانا عمرك ما بتنساها؟",
-                    "إمتى بتحس إني جذاب جداً في عينك؟",
-                    "لو نسافر أي مكان، تختار فين وليه؟",
-                    "إيه الحاجة اللي بتعملها عشان تراضيني؟",
-                    "أوصف شعورك أول مرة شوفتني فيها.",
-                    "إيه سر عمرك ما قولته لحد غيري؟",
-                    "نفسك حياتنا تكون عاملة ازاي بعد 10 سنين؟",
-                     // ... انسخ باقي الـ 100 هنا
-                ]
-            },
-            scratchPrizes: [ // جوائز الخربشة
-                "مساج كامل بالزيت 💆‍♂️",
-                "ليلة السلطان (طلباتك مجابة) 👑",
-                "فطار في السرير 🥐",
-                "كارت التجديد (شراء لانجري) 👙",
-                "شاور مشترك طويل 🚿",
-                "عشاء رومانسي 🕯️",
-                "يوم بدون نكد أو طلبات 😌",
-                "رقصة خاصة 💃",
-                "فيلم وسهرة ومشاريب 🎬",
-                "بوسة في مكان تختاره 💋"
-            ]
+            }
         };
 
-        // --- 2. المنطق البرمجي (Logic) ---
+        // --- المتغيرات ---
+        let currentSession = [];
+        let activeGameId = '';
+        let isMusicPlaying = false;
 
-        let currentGame = [];
-        const VALID_CODES = ["1234", "LOVE2024", "HOT50", "VIP99"]; // أكواد الدخول المسموحة
-
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function checkCode() {
-            const input = document.getElementById('access-code').value;
-            if(VALID_CODES.includes(input)) {
-                localStorage.setItem('isLoggedIn', true);
-                showScreen('dashboard-screen');
-            } else {
-                document.getElementById('error-msg').style.display = 'block';
+        // --- المؤثرات الصوتية ---
+        function playSnd(type) {
+            const audio = document.getElementById('snd-' + type);
+            if(audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio play blocked"));
             }
         }
 
-        // التحقق من تسجيل الدخول السابق
-        if(localStorage.getItem('isLoggedIn')) {
-            showScreen('dashboard-screen');
+        function toggleMusic() {
+            const bgMusic = document.getElementById('snd-bg');
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                isMusicPlaying = false;
+            } else {
+                bgMusic.volume = 0.3; // صوت واطي
+                bgMusic.play();
+                isMusicPlaying = true;
+            }
         }
 
-        function startGame(gameKey) {
-            currentGame = gamesData[gameKey].content;
-            document.getElementById('game-title').innerText = gamesData[gameKey].title;
-            document.getElementById('card-content').innerText = "اضغط الزر بالأسفل لسحب كارت";
-            document.getElementById('card-tag').innerText = "جاهز؟";
-            showScreen('game-screen');
+        // --- التنقل بين الشاشات ---
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+            playSnd('click');
         }
 
-        function drawCard() {
-            if(currentGame.length === 0) return;
-            // اختيار عشوائي
-            const randomIndex = Math.floor(Math.random() * currentGame.length);
-            const randomItem = currentGame[randomIndex];
+        function attemptLogin() {
+            const code = document.getElementById('passcode').value;
+            if(code === '1234' || code === 'HOT') {
+                playSnd('win');
+                switchScreen('dashboard');
+            } else {
+                alert('الكود غلط يا جميل 😉');
+            }
+        }
+
+        // --- منطق اللعبة ---
+        function openGameIntro(gameId) {
+            activeGameId = gameId;
+            const game = db[gameId];
             
-            // تحديث الكارت مع أنيميشن بسيط
-            const card = document.getElementById('card-display');
-            card.style.transform = "rotateY(90deg)";
+            // تعبئة بيانات المقدمة
+            document.getElementById('intro-title').innerText = game.title;
+            document.getElementById('intro-desc').innerText = game.desc;
+            // يمكنك وضع صورة معبرة هنا
+            document.getElementById('intro-img').src = "https://cdn-icons-png.flaticon.com/512/2503/2503529.png"; 
             
-            setTimeout(() => {
-                document.getElementById('card-content').innerText = randomItem;
-                
-                // تحديد نوع الكارت (شوق ولا ذوق) لتغيير اللون اختيارياً
-                if(randomItem.includes("شوق")) {
-                    document.getElementById('card-tag').innerText = "🔥 تحدي جرأة";
-                    document.getElementById('card-tag').style.color = "#e50914";
-                } else if (randomItem.includes("ذوق")) {
-                    document.getElementById('card-tag').innerText = "❤️ فعل رومانسي";
-                     document.getElementById('card-tag').style.color = "#d4af37";
-                } else {
-                    document.getElementById('card-tag').innerText = "🎲 كارت عشوائي";
-                }
-
-                card.style.transform = "rotateY(0deg)";
-            }, 200);
+            document.getElementById('modal-intro').classList.add('show');
+            playSnd('click');
         }
 
-        // --- 3. منطق الخربشة (Scratch Card) ---
-        
-        const canvas = document.getElementById('scratch-canvas');
-        const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-
-        function startScratch() {
-            showScreen('scratch-screen');
-            resetScratch();
+        function closeIntro() {
+            document.getElementById('modal-intro').classList.remove('show');
         }
 
-        function resetScratch() {
-            // اختيار جائزة عشوائية
-            const prizes = gamesData.scratchPrizes;
-            const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
-            document.getElementById('prize-text').innerText = randomPrize;
-
-            // إعداد طبقة الغطاء (الرمادي)
-            canvas.width = document.getElementById('scratch-area').offsetWidth;
-            canvas.height = document.getElementById('scratch-area').offsetHeight;
+        function startGameSession() {
+            closeIntro();
+            // خلط الأسئلة عشوائياً (Shuffle)
+            currentSession = [...db[activeGameId].content].sort(() => Math.random() - 0.5);
             
-            ctx.fillStyle = '#999'; // لون الغطاء
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // تغيير خلفية الصفحة لتناسب اللعبة (اختياري)
+            // document.body.style.backgroundImage = `url('assets/images/${activeGameId}_bg.jpg')`;
+
+            switchScreen('game');
+            // إعادة الكارت لوضعه الأصلي
+            const card = document.getElementById('active-card');
+            card.classList.remove('flipped');
+        }
+
+        function nextCard() {
+            const card = document.getElementById('active-card');
             
-            // إضافة نص "خربش هنا" فوق الغطاء
-            ctx.fillStyle = '#fff';
-            ctx.font = '20px Tajawal';
-            ctx.fillText("خربش هنا لإظهار الجايزة", 40, 80);
-
-            ctx.globalCompositeOperation = 'destination-out'; // التحويل لممحاة
+            // 1. إذا كان الكارت مكشوف، اقلبه للأول (اخفيه)
+            if(card.classList.contains('flipped')) {
+                card.classList.remove('flipped');
+                setTimeout(revealNewContent, 600); // انتظر حتى ينقلب
+            } else {
+                revealNewContent();
+            }
         }
 
-        // أحداث اللمس والماوس للخربشة
-        function scratch(e) {
-            if (!isDrawing) return;
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        function revealNewContent() {
+            if(currentSession.length === 0) {
+                alert("خلصت الكروت! هنعيد من الأول 🔥");
+                currentSession = [...db[activeGameId].content].sort(() => Math.random() - 0.5);
+            }
 
-            ctx.beginPath();
-            ctx.arc(x, y, 20, 0, Math.PI * 2); // حجم الفرشاة
-            ctx.fill();
+            const item = currentSession.pop();
+            const card = document.getElementById('active-card');
+
+            // تعبئة البيانات الجديدة
+            document.getElementById('challenge-txt').innerText = item.txt;
+            
+            // إذا الصورة غير موجودة استخدم صورة افتراضية (Placeholder) لتجنب كسر التصميم
+            const imgPath = item.img ? item.img : 'https://placehold.co/400x300/111/gold?text=Hot+Challenge';
+            document.getElementById('challenge-img').src = imgPath;
+
+            playSnd('flip');
+            card.classList.add('flipped'); // اكشف الكارت
         }
 
-        canvas.addEventListener('mousedown', () => isDrawing = true);
-        canvas.addEventListener('touchstart', () => isDrawing = true);
-        
-        canvas.addEventListener('mouseup', () => isDrawing = false);
-        canvas.addEventListener('touchend', () => isDrawing = false);
-        
-        canvas.addEventListener('mousemove', scratch);
-        canvas.addEventListener('touchmove', scratch);
+        function goHome() {
+            switchScreen('dashboard');
+            // إعادة الخلفية الأصلية
+            // document.body.style.backgroundImage = "url('assets/images/main_bg.jpg')";
+        }
+
+        // التعامل مع كروت اللعب بالضغط عليها
+        document.getElementById('active-card').addEventListener('click', function() {
+            if(!this.classList.contains('flipped')) {
+                nextCard();
+            }
+        });
 
     </script>
 </body>
