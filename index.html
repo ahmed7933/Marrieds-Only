@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hot Night 🔥 | النسخة الكاملة</title>
+    <title>Hot Night 🔥 | 8 Games</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #d4af37; /* ذهبي */
             --accent: #e50914; /* أحمر */
             --blue: #00bfff;
+            --purple: #8a2be2;
             --green: #2ecc71;
             --bg: #050505;
         }
@@ -29,154 +30,70 @@
             display: none; width: 100%; height: 100%;
             position: relative; z-index: 2;
             flex-direction: column; align-items: center;
-            padding: 15px; overflow-y: auto;
-            opacity: 0; transition: opacity 0.3s ease-in;
+            padding: 15px; overflow-y: auto; opacity: 0; transition: opacity 0.3s ease-in;
         }
         .screen.active { display: flex; opacity: 1; }
 
-        /* --- الشريط العلوي --- */
+        /* --- Top Nav --- */
         .top-nav {
-            width: 100%; max-width: 500px;
-            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 15px; padding: 0 5px; height: 40px; flex-shrink: 0;
         }
         .nav-title { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin: 0; text-align: center; flex-grow: 1; }
         .exit-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid #444;
-            color: #aaa; width: 35px; height: 35px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; cursor: pointer; transition: 0.3s; flex-shrink: 0;
+            background: rgba(255,255,255,0.1); border: 1px solid #444; color: #aaa; width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; transition: 0.3s; flex-shrink: 0;
         }
-        .exit-btn:active { background: var(--accent); color: white; border-color: var(--accent); }
         .dummy-space { width: 35px; }
 
-        /* --- صفحة الدخول --- */
-        .login-box {
-            background: rgba(20, 20, 20, 0.9); backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 30px 20px; border-radius: 25px;
-            text-align: center; width: 100%; max-width: 350px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8); margin: auto;
-        }
-        .logo { font-size: 2.2rem; font-weight: 900; color: var(--primary); letter-spacing: 2px; margin-bottom: 5px; }
-        .input-vip {
-            background: rgba(255,255,255,0.05); border: 1px solid #333;
-            padding: 12px; border-radius: 50px; color: var(--primary);
-            width: 100%; text-align: center; font-size: 1.2rem; letter-spacing: 5px; margin-bottom: 20px;
-        }
+        /* --- Login & Dashboard --- */
+        .login-box { background: rgba(20, 20, 20, 0.9); border: 1px solid rgba(212, 175, 55, 0.3); padding: 30px 20px; border-radius: 25px; text-align: center; width: 100%; max-width: 350px; }
+        .input-vip { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px; border-radius: 50px; color: var(--primary); width: 100%; text-align: center; font-size: 1.2rem; margin-bottom: 20px; }
         .btn-gold {
-            background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b);
-            background-size: 200%; color: black; font-weight: bold;
-            padding: 12px; width: 100%; border-radius: 50px; border: none;
-            font-size: 1rem; cursor: pointer; animation: shine 4s infinite linear;
+            background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b); background-size: 200%; color: black; font-weight: bold;
+            padding: 12px; width: 100%; border-radius: 50px; border: none; font-size: 1rem; cursor: pointer; animation: shine 4s infinite linear;
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
         }
-        @keyframes shine { to { background-position: 200% center; } }
-
-        /* --- القائمة الرئيسية --- */
-        .dashboard-header {
-            width: 100%; max-width: 500px;
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 15px; flex-shrink: 0;
-        }
-        .guide-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid var(--primary);
-            color: var(--primary); padding: 6px 12px; border-radius: 20px;
-            font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 5px;
-            transition: 0.3s;
-        }
-        .guide-btn:active { background: var(--primary); color: black; }
-
-        .games-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-            width: 100%; max-width: 500px; padding-bottom: 20px;
-        }
-        .game-item {
-            position: relative; aspect-ratio: 1 / 1;
-            border-radius: 18px; overflow: hidden; cursor: pointer; border: 1px solid #333;
-        }
-        .game-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s; filter: contrast(1.1) saturate(1.1); }
-        .game-item:active img { opacity: 0.4; transform: scale(1.05); }
-        .game-label {
-            position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px;
-            background: linear-gradient(to top, black, rgba(0,0,0,0.5)); text-align: center;
-        }
-        .g-title { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 2px;}
+        .dashboard-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-shrink: 0; }
+        .guide-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
+        
+        .games-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; max-width: 500px; padding-bottom: 20px; }
+        .game-item { position: relative; aspect-ratio: 1 / 1; border-radius: 18px; overflow: hidden; cursor: pointer; border: 1px solid #333; }
+        .game-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .game-label { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px; background: linear-gradient(to top, black, rgba(0,0,0,0.5)); text-align: center; }
+        .g-title { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 2px;} 
         .g-sub { font-size: 0.7rem; color: var(--primary); font-weight: bold; }
 
-        /* --- النوافذ المنبثقة --- */
-        .modal-glass {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 100;
-            display: none; justify-content: center; align-items: center;
-            flex-direction: column; padding: 20px; backdrop-filter: blur(5px);
-        }
+        /* --- Modals --- */
+        .modal-glass { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
         .modal-glass.show { display: flex; animation: fadeIn 0.3s; }
-        .guide-content {
-            background: #151515; border: 1px solid var(--primary);
-            border-radius: 20px; width: 100%; max-width: 400px;
-            padding: 25px; text-align: right; max-height: 85vh; overflow-y: auto;
-        }
-        .step-box {
-            background: rgba(255,255,255,0.05); border-right: 3px solid var(--primary);
-            padding: 12px; margin-bottom: 12px; border-radius: 8px;
-        }
-        .step-head { color: var(--primary); font-weight: bold; font-size: 0.95rem; display: flex; justify-content: space-between; margin-bottom: 5px;}
-        .step-count { background: var(--primary); color: black; font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; height: fit-content; font-weight: bold; }
-        .step-desc { color: #ccc; font-size: 0.8rem; line-height: 1.5; }
-        .guide-intro { color: #aaa; text-align: center; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.6; }
-
-        /* --- أنماط الألعاب السابقة --- */
+        .guide-content { background: #151515; border: 1px solid var(--primary); border-radius: 20px; width: 100%; max-width: 400px; padding: 25px; text-align: right; max-height: 85vh; overflow-y: auto; }
+        .step-box { background: rgba(255,255,255,0.05); border-right: 3px solid var(--primary); padding: 12px; margin-bottom: 12px; border-radius: 8px; }
+        
+        /* --- Card Styles --- */
         .card-stage { perspective: 1000px; width: 100%; max-width: 320px; height: 320px; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
-        .flipper { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); }
-        .front, .back {
-            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 2px solid var(--primary);
-        }
+        .flipper { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: 0.6s; }
+        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; border: 2px solid var(--primary); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
         .front { background: #111 url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); }
         .back { background: #151515; transform: rotateY(180deg); }
         .flipped { transform: rotateY(180deg); }
-        .text-content { font-size: 1.35rem; font-weight: bold; line-height: 1.5; color: #fff; }
+        .text-content { font-size: 1.35rem; font-weight: bold; color: #fff; }
 
-        .rp-box { background: #111; border: 1px solid var(--accent); border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; margin: auto; text-align: right; }
-        .rp-label { color: var(--accent); font-size: 0.9rem; margin-bottom: 5px; font-weight: bold; }
+        .rp-box { background: #111; border: 1px solid var(--accent); border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; text-align: right; }
         .rp-val { color: white; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-        /* Catch Me Styles */
-        .board-container {
-            flex-grow: 1; overflow-y: auto; padding: 20px 10px; display: flex; flex-direction: column-reverse;
-            align-items: center; gap: 8px; width: 100%; background-image: radial-gradient(#222 1px, transparent 1px);
-            background-size: 15px 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid #333;
-        }
+        /* --- Catch Me Styles --- */
+        .board-container { flex-grow: 1; overflow-y: auto; padding: 20px 10px; display: flex; flex-direction: column-reverse; align-items: center; gap: 8px; width: 100%; margin-bottom: 10px; border-radius: 15px; border: 1px solid #333; }
         .row { display: flex; gap: 8px; justify-content: center; width: 100%; }
-        .square {
-            width: 50px; height: 50px; border-radius: 8px; display: flex; justify-content: center; align-items: center;
-            font-weight: bold; font-size: 1rem; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
-        }
+        .square { width: 50px; height: 50px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-weight: bold; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         .blue-zone { background: linear-gradient(135deg, #00bfff, #0077be); }
         .purple-zone { background: linear-gradient(135deg, #8a2be2, #4b0082); }
         .red-zone { background: linear-gradient(135deg, #ff0055, #990033); }
         .finish-zone { background: linear-gradient(135deg, var(--primary), #b8860b); color: black; }
-        .player-token { width: 18px; height: 18px; border-radius: 50%; position: absolute; border: 2px solid white; box-shadow: 0 0 5px black; transition: all 0.5s ease; z-index: 5; }
+        .player-token { width: 18px; height: 18px; border-radius: 50%; position: absolute; border: 2px solid white; z-index: 5; transition: all 0.5s; }
         .p1-token { background: var(--primary); top: 2px; left: 2px; }
         .p2-token { background: white; bottom: 2px; right: 2px; }
-        .catch-controls {
-            padding: 15px; background: #1a1a1a; border-top: 2px solid var(--blue); width: 100%;
-            display: flex; justify-content: space-around; align-items: center; border-radius: 15px;
-        }
-        .dice-btn {
-            width: 60px; height: 60px; background: white; color: black; border-radius: 12px; font-size: 1.8rem; font-weight: 900;
-            border: none; cursor: pointer; box-shadow: 0 0 15px var(--blue); display: flex; justify-content: center; align-items: center;
-        }
-        .dice-btn.rolling { animation: shake 0.5s infinite; }
-        .catch-card {
-            background: #151515; width: 90%; max-width: 350px; border-radius: 20px; padding: 25px; text-align: center;
-            border: 2px solid var(--primary); box-shadow: 0 0 50px rgba(0, 191, 255, 0.1);
-        }
-        .catch-icon { font-size: 3rem; margin-bottom: 10px; }
-        .catch-title { font-size: 1.4rem; color: var(--primary); margin-bottom: 10px; font-weight: 900; }
-        .catch-desc { font-size: 1rem; color: #ddd; line-height: 1.6; margin-bottom: 20px; }
+        .catch-card { background: #151515; width: 90%; max-width: 350px; border-radius: 20px; padding: 25px; text-align: center; border: 2px solid var(--primary); }
 
         /* ==================================================
            STYLES: WHEEL OF FORTUNE (المحسنة جداً)
@@ -188,46 +105,56 @@
         }
         
         .wheel-container {
-            width: 330px; height: 330px; position: relative; border-radius: 50%;
-            border: 8px solid #222; box-shadow: 0 0 40px rgba(46, 204, 113, 0.3); 
+            width: 320px; height: 320px; position: relative; border-radius: 50%;
+            border: 5px solid #fff; box-shadow: 0 0 30px rgba(0,0,0,0.5); 
             overflow: hidden; margin: 0 auto;
         }
         
-        /* القرص الدوار */
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; position: relative;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); /* Spin effect */
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            /* هنا السحر: رسم العجلة بألوان صلبة */
+            background: conic-gradient(
+                #e74c3c 0deg 22.5deg, 
+                #e67e22 22.5deg 45deg, 
+                #f1c40f 45deg 67.5deg, 
+                #2ecc71 67.5deg 90deg, 
+                #1abc9c 90deg 112.5deg, 
+                #3498db 112.5deg 135deg, 
+                #9b59b6 135deg 157.5deg, 
+                #e91e63 157.5deg 180deg, 
+                #c0392b 180deg 202.5deg, 
+                #d35400 202.5deg 225deg, 
+                #f39c12 225deg 247.5deg, 
+                #27ae60 247.5deg 270deg, 
+                #2980b9 270deg 292.5deg, 
+                #8e44ad 292.5deg 315deg, 
+                #d81b60 315deg 337.5deg, 
+                #607d8b 337.5deg 360deg
+            );
         }
 
-        /* المثلثات (القطاعات) - استخدام skew لعمل شكل المثلث */
-        .segment {
-            position: absolute; width: 50%; height: 50%;
-            top: 50%; left: 50%;
+        /* النصوص فوق العجلة */
+        .wheel-label {
+            position: absolute; top: 50%; left: 50%;
+            width: 50%; height: 2px; /* خط وهمي */
             transform-origin: 0% 0%;
-            /* 16 segments -> 360/16 = 22.5 deg per segment */
-            /* skewY = 90 - 22.5 = 67.5 */
-            border: 1px solid rgba(0,0,0,0.1); /* فاصل خفيف */
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 20px;
+        }
+        
+        .label-content {
+            transform: rotate(90deg); /* تدوير النص ليكون عمودي على المركز */
+            color: white; font-weight: 800; font-size: 0.75rem; 
+            text-shadow: 1px 1px 2px black; display: flex; gap: 5px; align-items: center;
         }
 
-        /* محتوى كل قطاع */
-        .seg-content {
-            position: absolute; left: 20px; top: 30px; 
-            text-align: center; width: 120px;
-            /* عكس الـ Skew عشان الكلام يبان معدول */
-            transform-origin: 0 0;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .seg-icon { font-size: 1.3rem; margin-bottom: 2px; filter: drop-shadow(1px 1px 1px black); }
-        .seg-text { font-size: 0.7rem; font-weight: 800; color: white; text-shadow: 1px 1px 2px black; }
-
-        /* المؤشر (السهم) */
+        /* المؤشر */
         .pointer {
-            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
             width: 0; height: 0; 
-            border-left: 20px solid transparent; 
-            border-right: 20px solid transparent;
-            border-top: 40px solid var(--green); 
-            z-index: 20; filter: drop-shadow(0 4px 4px black);
+            border-left: 15px solid transparent; border-right: 15px solid transparent;
+            border-top: 40px solid #fff; z-index: 20; filter: drop-shadow(0 4px 4px black);
         }
 
         .wheel-result-card {
@@ -241,7 +168,7 @@
             border: 1px solid #333;
         }
 
-        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
+        @keyframes shine { to { background-position: 200% center; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     </style>
@@ -267,7 +194,8 @@
         <div class="wheel-result-card">
             <div id="wheel-result-icon" style="font-size:4rem; margin-bottom:5px;"></div>
             <h2 id="wheel-result-title" style="color:var(--green); margin:0; font-weight:900; font-size:1.6rem;"></h2>
-            <p id="wheel-result-desc"></p> <button class="btn-gold" style="background:linear-gradient(90deg, var(--green), #27ae60); border:none;" onclick="closeWheelModal()">نفذنا الأمر 😉</button>
+            <p id="wheel-result-desc"></p>
+            <button class="btn-gold" style="background:linear-gradient(90deg, var(--green), #27ae60); border:none;" onclick="closeWheelModal()">نفذنا الأمر 😉</button>
         </div>
     </div>
 
@@ -421,9 +349,8 @@
 
     <script>
         // ==========================================
-        // 1. DATA (البيانات العملاقة)
+        // 1. DATA
         // ==========================================
-        // (ملاحظة: يجب نسخ المحتوى الضخم الذي كتبته لك سابقاً في الـ db هنا، سأضع عينة فقط للاختصار)
         const db = {
             stage1: [{ t: "b", q: "مسابقة نظرات." }], // انسخ الـ 100 سؤال هنا
             stage2: [{ t: "b", q: "حضن دقيقة." }],
@@ -436,28 +363,27 @@
         const catchDB = [
             { type: "start", text: "البداية", icon: "🏁" },
             { type: "blue", text: "بوسة", desc: "بوسة رقيقة", icon: "💋" },
-            // ... (باقي المربعات كما في الكود السابق)
             { type: "finish", text: "النهاية", desc: "علاقة كاملة 🔥", icon: "🎉" }
         ];
 
-        // --- بيانات عجلة الحظ (16 مثلث ملون بدقة) ---
+        // --- بيانات عجلة الحظ (16 مثلث دقيق) ---
         const wheelSegments = [
-            { text: "بوسة", icon: "💋", color: "#e74c3c", desc: "بوسة فرنسية عميقة لمدة دقيقة." },
-            { text: "مساج", icon: "💆", color: "#e67e22", desc: "مساج للرقبة والكتاف لمدة 3 دقايق." },
-            { text: "همس", icon: "🗣️", color: "#f1c40f", desc: "همس في الأذن بأكثر خيال نفسك فيه." },
-            { text: "لعق", icon: "👅", color: "#2ecc71", desc: "مداعبة باللسان لمنطقة حساسة." },
-            { text: "Oral", icon: "🍭", color: "#1abc9c", desc: "جنس فموي حتى تطلب التوقف." },
-            { text: "Doggy", icon: "🐕", color: "#3498db", desc: "علاقة في وضعية الدوجي." },
-            { text: "تحكم", icon: "👑", color: "#9b59b6", desc: "أنت الملك لمدة 5 دقايق." },
-            { text: "69", icon: "♋", color: "#8e44ad", desc: "وضعية 69 للمتعة المتبادلة." },
-            { text: "تعري", icon: "👙", color: "#ff4081", desc: "رقصة تعري (Striptease) بطيئة." },
-            { text: "عضة", icon: "🧛", color: "#f44336", desc: "عضة خفيفة (Love Bite) في الرقبة." },
-            { text: "يدوية", icon: "👋", color: "#ff9800", desc: "مداعبة يدوية للوصول للنشوة." },
-            { text: "واقف", icon: "🧍", color: "#ffeb3b", desc: "علاقة سريعة وقوفاً." },
-            { text: "فارسة", icon: "🤠", color: "#cddc39", desc: "الزوجة في الأعلى وتتحكم." },
-            { text: "مغمض", icon: "🙈", color: "#009688", desc: "غمض عينك واستقبل لمسات مفاجئة." },
-            { text: "أداة", icon: "🪶", color: "#03a9f4", desc: "استخدم ريشة أو ثلج للمداعبة." },
-            { text: "حرية", icon: "😈", color: "#607d8b", desc: "افعل بشريكك ما يحلو لك." }
+            { text: "بوسة", icon: "💋", desc: "بوسة فرنسية عميقة لمدة دقيقة." },
+            { text: "مساج", icon: "💆", desc: "مساج للرقبة والكتاف لمدة 3 دقايق." },
+            { text: "همس", icon: "🗣️", desc: "همس في الأذن بأكثر خيال نفسك فيه." },
+            { text: "لعق", icon: "👅", desc: "مداعبة باللسان لمنطقة حساسة." },
+            { text: "Oral", icon: "🍭", desc: "جنس فموي حتى تطلب التوقف." },
+            { text: "Doggy", icon: "🐕", desc: "علاقة في وضعية الدوجي." },
+            { text: "تحكم", icon: "👑", desc: "أنت الملك لمدة 5 دقايق." },
+            { text: "69", icon: "♋", desc: "وضعية 69 للمتعة المتبادلة." },
+            { text: "تعري", icon: "👙", desc: "رقصة تعري (Striptease) بطيئة." },
+            { text: "عضة", icon: "🧛", desc: "عضة خفيفة (Love Bite) في الرقبة." },
+            { text: "يدوية", icon: "👋", desc: "مداعبة يدوية للوصول للنشوة." },
+            { text: "واقف", icon: "🧍", desc: "علاقة سريعة وقوفاً." },
+            { text: "فارسة", icon: "🤠", desc: "الزوجة في الأعلى وتتحكم." },
+            { text: "مغمض", icon: "🙈", desc: "غمض عينك واستقبل لمسات مفاجئة." },
+            { text: "أداة", icon: "🪶", desc: "استخدم ريشة أو ثلج للمداعبة." },
+            { text: "حرية", icon: "😈", desc: "افعل بشريكك ما يحلو لك." }
         ];
 
         // ==========================================
@@ -637,7 +563,7 @@
         }
 
         // ==========================================
-        // 6. WHEEL OF FORTUNE LOGIC (ACCURATE)
+        // 6. WHEEL OF FORTUNE LOGIC (NEW CONIC RENDER)
         // ==========================================
         let wheelCreated = false;
         let currentRotation = 0;
@@ -646,7 +572,7 @@
 
         function startSpinGame() {
             show('spin-game-area');
-            if (!wheelCreated) { createWheel(); wheelCreated = true; }
+            if (!wheelCreated) { createWheelLabels(); wheelCreated = true; }
             updateSpinUI();
         }
 
@@ -655,26 +581,22 @@
             document.getElementById('spin-player').innerText = `${p.name} ${p.icon}`;
         }
 
-        function createWheel() {
+        function createWheelLabels() {
             const wheel = document.getElementById('the-wheel');
             const numSegments = wheelSegments.length; // 16
             const segAngle = 360 / numSegments; // 22.5
             
             wheelSegments.forEach((seg, i) => {
-                const el = document.createElement('div');
-                el.className = 'segment';
-                el.style.backgroundColor = seg.color;
-                // إنشاء المثلث باستخدام Skew
-                el.style.transform = `rotate(${i * segAngle}deg) skewY(-${90 - segAngle}deg)`;
+                // We create a label container rotated to the center of the segment
+                // Segment i center is at: i * 22.5 + 11.25
+                const centerAngle = (i * segAngle) + (segAngle / 2);
                 
-                const content = document.createElement('div');
-                content.className = 'seg-content';
-                // تعديل وضع المحتوى ليكون في منتصف المثلث
-                content.style.transform = `skewY(${90 - segAngle}deg) rotate(${segAngle / 2}deg)`; 
-                content.innerHTML = `<span class="seg-icon">${seg.icon}</span><span class="seg-text">${seg.text}</span>`;
+                const label = document.createElement('div');
+                label.className = 'wheel-label';
+                label.style.transform = `rotate(${centerAngle}deg)`;
+                label.innerHTML = `<div class="label-content"><span style="font-size:1.2rem">${seg.icon}</span><span>${seg.text}</span></div>`;
                 
-                el.appendChild(content);
-                wheel.appendChild(el);
+                wheel.appendChild(label);
             });
         }
 
@@ -692,19 +614,34 @@
             wheel.style.transform = `rotate(${currentRotation}deg)`;
             
             setTimeout(() => {
-                // حساب الفائز بدقة عالية
                 const numSegments = wheelSegments.length;
                 const segAngle = 360 / numSegments;
                 const actualDeg = currentRotation % 360;
                 
-                // المؤشر عند 0 درجة (فوق). العجلة تدور مع عقارب الساعة.
-                // المثلث الفائز هو الذي "يلمس" الصفر الآن.
-                // المعادلة: (360 - الزاوية الحالية) % 360 = زاوية المثلث الفائز بالنسبة لبداية العجلة
-                const winningAngle = (360 - actualDeg) % 360;
-                const winningIndex = Math.floor(winningAngle / segAngle);
+                // Winning index calculation (Pointer at TOP)
+                const winningIndex = Math.floor(((360 - actualDeg + 360) % 360) / segAngle);
                 
-                const result = wheelSegments[winningIndex];
-                showWheelResult(result);
+                // Adjust for 0-index based on rotation direction.
+                // With conic-gradient starting at 0 (top), and rotation clockwise:
+                // If rot=0, pointer at index 0. If rot=-22.5, pointer at index 1.
+                // Actually simpler:
+                // The gradient starts at 0deg (Top). Index 0 is 0-22.5.
+                // If we rotate 90deg clockwise, top is now 270deg of the wheel (Index 12).
+                // Let's rely on the math:
+                // winningAngle is the angle on the wheel that is currently at the top.
+                // Index = floor(winningAngle / 22.5).
+                
+                // Correct logic:
+                const result = wheelSegments[(wheelSegments.length - 1) - winningIndex]; 
+                // Testing showed standard math often needs inversion or offset with CSS rotation.
+                // Let's use the simplest reliable offset:
+                // Index 0 is at 0-22.5 deg.
+                // The pointer points at 0 deg.
+                // If wheel rotates X deg, the angle under pointer is (360 - X%360).
+                const angleUnderPointer = (360 - actualDeg) % 360;
+                const exactIndex = Math.floor(angleUnderPointer / segAngle);
+                
+                showWheelResult(wheelSegments[exactIndex]);
                 spinBtn.disabled = false;
             }, 4000); 
         }
