@@ -256,10 +256,10 @@
             <div class="step-box"><div class="step-head"><span>1. فك الشفرة 😂</span></div><div class="step-desc">لعبة ضحك وكسر جليد.</div></div>
             <div class="step-box"><div class="step-head"><span>2. كلمة سر ❤️</span></div><div class="step-desc">أسئلة عاطفية للتقارب.</div></div>
             <div class="step-box"><div class="step-head"><span>3. لمسة وهمسة 🔥</span></div><div class="step-desc">مداعبة وتسخين حسي.</div></div>
-            <div class="step-box"><div class="step-head"><span style="color:var(--accent)">4. المنطقة المحظورة 🔞</span></div><div class="step-desc">أكشن وتحديات جريئة.</div></div>
+            <div class="step-box"><div class="step-head"><span style="color:var(--accent)">4. نار ودمار 🔞</span></div><div class="step-desc">أكشن وتحديات جريئة.</div></div>
             <div class="step-box"><div class="step-head"><span>5. خربش واكسب 🎁</span></div><div class="step-desc">مكافآت وجوائز.</div></div>
-            <div class="step-box"><div class="step-head"><span style="color:var(--accent)">6. مسرح الأحلام 🎭</span></div><div class="step-desc">سيناريوهات لتقمص الأدوار.</div></div>
-            <div class="step-box"><div class="step-head"><span style="color:var(--blue)">7. Catch Me 🎲</span></div><div class="step-desc">لعبة السلم والثعبان الزوجية.</div></div>
+            <div class="step-box"><div class="step-head"><span style="color:var(--accent)">6. تمثيل ساخن 🎭</span></div><div class="step-desc">سيناريوهات لتقمص الأدوار.</div></div>
+            <div class="step-box"><div class="step-head"><span style="color:var(--blue)">7. رحلة المتعة 🎲</span></div><div class="step-desc">لعبة السلم والثعبان الزوجية.</div></div>
             <div class="step-box"><div class="step-head"><span style="color:var(--green)">8. عجلة الحظ 🎡</span></div><div class="step-desc">لف العجلة ونفذ الوضع أو الفعل اللي يطلعلك.</div></div>
             <button class="btn-gold" onclick="closeGuide()">فهمت.. يلا بينا 🚀</button>
         </div>
@@ -315,7 +315,7 @@
             </div>
             <div class="game-item" onclick="startGame('stage4')" style="border-color: var(--accent);">
                 <img src="https://images.unsplash.com/photo-1496345962527-29757c3a3d94?q=80&w=400&fit=crop" alt="Hot">
-                <div class="game-label"><div class="g-title" style="color:var(--accent)">4. المنطقة المحظورة</div><div class="g-sub">تحديات جريئة</div></div>
+                <div class="game-label"><div class="g-title" style="color:var(--accent)">4. نار ودمار</div><div class="g-sub">تحديات جريئة</div></div>
             </div>
             <div class="game-item" onclick="initScratch()">
                 <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=400&fit=crop" alt="Gift">
@@ -323,11 +323,11 @@
             </div>
             <div class="game-item" onclick="startRoleplay()">
                 <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=400&fit=crop" alt="Roleplay">
-                <div class="game-label"><div class="g-title">6. مسرح الأحلام</div><div class="g-sub">سيناريوهات</div></div>
+                <div class="game-label"><div class="g-title">6. تمثيل ساخن</div><div class="g-sub">سيناريوهات</div></div>
             </div>
             <div class="game-item" onclick="startCatchMe()" style="border-color: var(--blue);">
                 <img src="https://images.unsplash.com/photo-1605218427306-6354db696faa?q=80&w=400&fit=crop" alt="Catch Me">
-                <div class="game-label"><div class="g-title" style="color:var(--blue)">7. Catch Me 🎲</div><div class="g-sub">السلم والثعبان</div></div>
+                <div class="game-label"><div class="g-title" style="color:var(--blue)">7. رحلة المتعة 🎲</div><div class="g-sub">السلم والثعبان</div></div>
             </div>
             <div class="game-item" onclick="startSpinGame()" style="border-color: var(--green);">
                 <img src="https://images.unsplash.com/photo-1599587425330-974c65324426?q=80&w=400&fit=crop" alt="Spin">
@@ -367,7 +367,7 @@
     <div id="roleplay-area" class="screen">
         <div class="top-nav">
             <button class="exit-btn" onclick="goHome()">✕</button>
-            <h2 class="nav-title" style="color:var(--accent);">🎭 مسرح الأحلام</h2>
+            <h2 class="nav-title" style="color:var(--accent);">🎭 تمثيل ساخن</h2>
             <div class="dummy-space"></div>
         </div>
         <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px; text-align:center;">سيناريو جاهز لليلة مختلفة</p>
@@ -382,7 +382,7 @@
     <div id="catch-game-area" class="screen">
         <div class="top-nav">
             <button class="exit-btn" onclick="goHome()">✕</button>
-            <h2 class="nav-title" style="color:var(--blue);">Catch Me 🎲</h2>
+            <h2 class="nav-title" style="color:var(--blue);">رحلة المتعة 🎲</h2>
             <div class="dummy-space"></div>
         </div>
         <div class="board-container" id="board"></div>
@@ -556,7 +556,7 @@
             if(stg=='stage1') title="فك الشفرة 😂";
             if(stg=='stage2') title="كلمة سر ❤️";
             if(stg=='stage3') title="لمسة وهمسة 🔥";
-            if(stg=='stage4') title="المنطقة المحظورة 🔞";
+            if(stg=='stage4') title="نار ودمار 🔞";
             document.getElementById('g-header').innerText = title;
             document.getElementById('card-obj').classList.remove('flipped');
             show('gameplay');
@@ -870,6 +870,7 @@ function createCatchBoard() {
     </script>
 </body>
 </html>
+
 
 
 
