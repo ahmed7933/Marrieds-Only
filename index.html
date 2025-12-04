@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hot Night 🔥 | 8 Games</title>
+    <title>Hot Night 🔥 | النسخة الاحترافية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #d4af37; /* ذهبي */
             --accent: #e50914; /* أحمر */
             --blue: #00bfff;
-            --purple: #8a2be2;
             --green: #2ecc71;
             --bg: #050505;
         }
@@ -34,7 +33,7 @@
         }
         .screen.active { display: flex; opacity: 1; }
 
-        /* --- Top Nav --- */
+        /* --- الشريط العلوي --- */
         .top-nav {
             width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 15px; padding: 0 5px; height: 40px; flex-shrink: 0;
@@ -46,7 +45,7 @@
         }
         .dummy-space { width: 35px; }
 
-        /* --- Login & Dashboard --- */
+        /* --- الدخول والقائمة --- */
         .login-box { background: rgba(20, 20, 20, 0.9); border: 1px solid rgba(212, 175, 55, 0.3); padding: 30px 20px; border-radius: 25px; text-align: center; width: 100%; max-width: 350px; }
         .input-vip { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px; border-radius: 50px; color: var(--primary); width: 100%; text-align: center; font-size: 1.2rem; margin-bottom: 20px; }
         .btn-gold {
@@ -64,13 +63,13 @@
         .g-title { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 2px;} 
         .g-sub { font-size: 0.7rem; color: var(--primary); font-weight: bold; }
 
-        /* --- Modals --- */
+        /* --- النوافذ --- */
         .modal-glass { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
         .modal-glass.show { display: flex; animation: fadeIn 0.3s; }
         .guide-content { background: #151515; border: 1px solid var(--primary); border-radius: 20px; width: 100%; max-width: 400px; padding: 25px; text-align: right; max-height: 85vh; overflow-y: auto; }
         .step-box { background: rgba(255,255,255,0.05); border-right: 3px solid var(--primary); padding: 12px; margin-bottom: 12px; border-radius: 8px; }
         
-        /* --- Card Styles --- */
+        /* --- الألعاب --- */
         .card-stage { perspective: 1000px; width: 100%; max-width: 320px; height: 320px; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
         .flipper { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: 0.6s; }
         .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; border: 2px solid var(--primary); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
@@ -82,7 +81,6 @@
         .rp-box { background: #111; border: 1px solid var(--accent); border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; text-align: right; }
         .rp-val { color: white; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-        /* --- Catch Me Styles --- */
         .board-container { flex-grow: 1; overflow-y: auto; padding: 20px 10px; display: flex; flex-direction: column-reverse; align-items: center; gap: 8px; width: 100%; margin-bottom: 10px; border-radius: 15px; border: 1px solid #333; }
         .row { display: flex; gap: 8px; justify-content: center; width: 100%; }
         .square { width: 50px; height: 50px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-weight: bold; position: relative; border: 1px solid rgba(255,255,255,0.1); }
@@ -93,10 +91,13 @@
         .player-token { width: 18px; height: 18px; border-radius: 50%; position: absolute; border: 2px solid white; z-index: 5; transition: all 0.5s; }
         .p1-token { background: var(--primary); top: 2px; left: 2px; }
         .p2-token { background: white; bottom: 2px; right: 2px; }
+        .catch-controls { padding: 15px; background: #1a1a1a; border-top: 2px solid var(--blue); width: 100%; display: flex; justify-content: space-around; align-items: center; border-radius: 15px; }
+        .dice-btn { width: 60px; height: 60px; background: white; color: black; border-radius: 12px; font-size: 1.8rem; font-weight: 900; border: none; cursor: pointer; box-shadow: 0 0 15px var(--blue); display: flex; justify-content: center; align-items: center; }
+        .dice-btn.rolling { animation: shake 0.5s infinite; }
         .catch-card { background: #151515; width: 90%; max-width: 350px; border-radius: 20px; padding: 25px; text-align: center; border: 2px solid var(--primary); }
 
         /* ==================================================
-           STYLES: WHEEL OF FORTUNE (المحسنة جداً)
+           STYLES: WHEEL OF FORTUNE (Clean & Icon Only)
            ================================================== */
         .spin-header {
             text-align: center; margin-bottom: 20px;
@@ -105,58 +106,49 @@
         }
         
         .wheel-container {
-            width: 320px; height: 320px; position: relative; border-radius: 50%;
-            border: 5px solid #fff; box-shadow: 0 0 30px rgba(0,0,0,0.5); 
+            width: 330px; height: 330px; position: relative; border-radius: 50%;
+            border: 8px solid #222; box-shadow: 0 0 40px rgba(46, 204, 113, 0.3); 
             overflow: hidden; margin: 0 auto;
         }
         
-        .wheel {
-            width: 100%; height: 100%; border-radius: 50%; position: relative;
+        /* 1. الخلفية الملونة (نظيفة جداً) */
+        .wheel-bg {
+            width: 100%; height: 100%; border-radius: 50%; position: absolute; top:0; left:0;
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-            /* هنا السحر: رسم العجلة بألوان صلبة */
-            background: conic-gradient(
-                #e74c3c 0deg 22.5deg, 
-                #e67e22 22.5deg 45deg, 
-                #f1c40f 45deg 67.5deg, 
-                #2ecc71 67.5deg 90deg, 
-                #1abc9c 90deg 112.5deg, 
-                #3498db 112.5deg 135deg, 
-                #9b59b6 135deg 157.5deg, 
-                #e91e63 157.5deg 180deg, 
-                #c0392b 180deg 202.5deg, 
-                #d35400 202.5deg 225deg, 
-                #f39c12 225deg 247.5deg, 
-                #27ae60 247.5deg 270deg, 
-                #2980b9 270deg 292.5deg, 
-                #8e44ad 292.5deg 315deg, 
-                #d81b60 315deg 337.5deg, 
-                #607d8b 337.5deg 360deg
-            );
+            /* سيتم تعبئتها بـ JS لتكون دقيقة */
         }
 
-        /* النصوص فوق العجلة */
-        .wheel-label {
+        /* 2. طبقة الأيقونات (فوق الخلفية) */
+        .wheel-icons-layer {
+            width: 100%; height: 100%; border-radius: 50%; position: absolute; top:0; left:0;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        /* حاوية الأيقونة الواحدة */
+        .icon-box {
             position: absolute; top: 50%; left: 50%;
-            width: 50%; height: 2px; /* خط وهمي */
-            transform-origin: 0% 0%;
-            display: flex; align-items: center; justify-content: flex-end;
-            padding-right: 20px;
+            width: 0; height: 0;
+            /* يتم تدويرها لوضع الأيقونة في الزاوية الصحيحة */
         }
         
-        .label-content {
-            transform: rotate(90deg); /* تدوير النص ليكون عمودي على المركز */
-            color: white; font-weight: 800; font-size: 0.75rem; 
-            text-shadow: 1px 1px 2px black; display: flex; gap: 5px; align-items: center;
+        .icon-content {
+            position: absolute; left: -20px; bottom: 65px; /* رفع الأيقونة للأعلى بعيداً عن المركز */
+            width: 40px; text-align: center;
+            font-size: 1.8rem; /* أيقونة كبيرة وواضحة */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            color: white;
         }
 
         /* المؤشر */
         .pointer {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
             width: 0; height: 0; 
-            border-left: 15px solid transparent; border-right: 15px solid transparent;
-            border-top: 40px solid #fff; z-index: 20; filter: drop-shadow(0 4px 4px black);
+            border-left: 20px solid transparent; 
+            border-right: 20px solid transparent;
+            border-top: 45px solid #fff; z-index: 20; filter: drop-shadow(0 4px 4px black);
         }
 
+        /* نافذة النتيجة */
         .wheel-result-card {
             background: #111; border: 3px solid var(--green); padding: 25px; border-radius: 25px;
             text-align: center; width: 90%; max-width: 380px;
@@ -168,7 +160,7 @@
             border: 1px solid #333;
         }
 
-        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     </style>
@@ -339,8 +331,8 @@
         <div style="position:relative; margin-top: 20px;">
             <div class="pointer"></div>
             <div class="wheel-container">
-                <div class="wheel" id="the-wheel">
-                    </div>
+                <div class="wheel-bg" id="wheel-bg"></div>
+                <div class="wheel-icons-layer" id="wheel-icons"></div>
             </div>
         </div>
 
@@ -349,7 +341,7 @@
 
     <script>
         // ==========================================
-        // 1. DATA
+        // 1. DATA (البيانات العملاقة)
         // ==========================================
         const db = {
             stage1: [{ t: "b", q: "مسابقة نظرات." }], // انسخ الـ 100 سؤال هنا
@@ -366,24 +358,24 @@
             { type: "finish", text: "النهاية", desc: "علاقة كاملة 🔥", icon: "🎉" }
         ];
 
-        // --- بيانات عجلة الحظ (16 مثلث دقيق) ---
+        // --- بيانات عجلة الحظ (16 مثلث، أيقونات فقط) ---
         const wheelSegments = [
-            { text: "بوسة", icon: "💋", desc: "بوسة فرنسية عميقة لمدة دقيقة." },
-            { text: "مساج", icon: "💆", desc: "مساج للرقبة والكتاف لمدة 3 دقايق." },
-            { text: "همس", icon: "🗣️", desc: "همس في الأذن بأكثر خيال نفسك فيه." },
-            { text: "لعق", icon: "👅", desc: "مداعبة باللسان لمنطقة حساسة." },
-            { text: "Oral", icon: "🍭", desc: "جنس فموي حتى تطلب التوقف." },
-            { text: "Doggy", icon: "🐕", desc: "علاقة في وضعية الدوجي." },
-            { text: "تحكم", icon: "👑", desc: "أنت الملك لمدة 5 دقايق." },
-            { text: "69", icon: "♋", desc: "وضعية 69 للمتعة المتبادلة." },
-            { text: "تعري", icon: "👙", desc: "رقصة تعري (Striptease) بطيئة." },
-            { text: "عضة", icon: "🧛", desc: "عضة خفيفة (Love Bite) في الرقبة." },
-            { text: "يدوية", icon: "👋", desc: "مداعبة يدوية للوصول للنشوة." },
-            { text: "واقف", icon: "🧍", desc: "علاقة سريعة وقوفاً." },
-            { text: "فارسة", icon: "🤠", desc: "الزوجة في الأعلى وتتحكم." },
-            { text: "مغمض", icon: "🙈", desc: "غمض عينك واستقبل لمسات مفاجئة." },
-            { text: "أداة", icon: "🪶", desc: "استخدم ريشة أو ثلج للمداعبة." },
-            { text: "حرية", icon: "😈", desc: "افعل بشريكك ما يحلو لك." }
+            { text: "بوسة", icon: "💋", color: "#e74c3c", desc: "بوسة فرنسية عميقة لمدة دقيقة." },
+            { text: "مساج", icon: "💆", color: "#e67e22", desc: "مساج للرقبة والكتاف لمدة 3 دقايق." },
+            { text: "همس", icon: "🗣️", color: "#f1c40f", desc: "همس في الأذن بأكثر خيال نفسك فيه." },
+            { text: "لعق", icon: "👅", color: "#2ecc71", desc: "مداعبة باللسان لمنطقة حساسة." },
+            { text: "Oral", icon: "🍭", color: "#1abc9c", desc: "جنس فموي حتى تطلب التوقف." },
+            { text: "Doggy", icon: "🐕", color: "#3498db", desc: "علاقة في وضعية الدوجي." },
+            { text: "تحكم", icon: "👑", color: "#9b59b6", desc: "أنت الملك لمدة 5 دقايق." },
+            { text: "69", icon: "♋", color: "#8e44ad", desc: "وضعية 69 للمتعة المتبادلة." },
+            { text: "تعري", icon: "👙", color: "#ff4081", desc: "رقصة تعري (Striptease) بطيئة." },
+            { text: "عضة", icon: "🧛", color: "#f44336", desc: "عضة خفيفة (Love Bite) في الرقبة." },
+            { text: "يدوية", icon: "👋", color: "#ff9800", desc: "مداعبة يدوية للوصول للنشوة." },
+            { text: "واقف", icon: "🧍", color: "#ffeb3b", desc: "علاقة سريعة وقوفاً." },
+            { text: "فارسة", icon: "🤠", color: "#cddc39", desc: "الزوجة في الأعلى وتتحكم." },
+            { text: "مغمض", icon: "🙈", color: "#009688", desc: "غمض عينك واستقبل لمسات مفاجئة." },
+            { text: "أداة", icon: "🪶", color: "#03a9f4", desc: "استخدم ريشة أو ثلج للمداعبة." },
+            { text: "حرية", icon: "😈", color: "#607d8b", desc: "افعل بشريكك ما يحلو لك." }
         ];
 
         // ==========================================
@@ -563,7 +555,7 @@
         }
 
         // ==========================================
-        // 6. WHEEL OF FORTUNE LOGIC (NEW CONIC RENDER)
+        // 6. WHEEL OF FORTUNE LOGIC (CLEAN)
         // ==========================================
         let wheelCreated = false;
         let currentRotation = 0;
@@ -572,7 +564,7 @@
 
         function startSpinGame() {
             show('spin-game-area');
-            if (!wheelCreated) { createWheelLabels(); wheelCreated = true; }
+            if (!wheelCreated) { createWheelClean(); wheelCreated = true; }
             updateSpinUI();
         }
 
@@ -581,27 +573,38 @@
             document.getElementById('spin-player').innerText = `${p.name} ${p.icon}`;
         }
 
-        function createWheelLabels() {
-            const wheel = document.getElementById('the-wheel');
-            const numSegments = wheelSegments.length; // 16
-            const segAngle = 360 / numSegments; // 22.5
+        function createWheelClean() {
+            // 1. بناء التدرج اللوني (Conic Gradient)
+            let gradientString = "conic-gradient(";
+            const segmentSize = 360 / wheelSegments.length; // 22.5 deg
             
             wheelSegments.forEach((seg, i) => {
-                // We create a label container rotated to the center of the segment
-                // Segment i center is at: i * 22.5 + 11.25
-                const centerAngle = (i * segAngle) + (segAngle / 2);
+                const startDeg = i * segmentSize;
+                const endDeg = (i + 1) * segmentSize;
+                gradientString += `${seg.color} ${startDeg}deg ${endDeg}deg${i < wheelSegments.length - 1 ? ',' : ''}`;
+            });
+            gradientString += ")";
+            
+            document.getElementById('wheel-bg').style.background = gradientString;
+
+            // 2. وضع الأيقونات
+            const iconContainer = document.getElementById('wheel-icons');
+            wheelSegments.forEach((seg, i) => {
+                const box = document.createElement('div');
+                box.className = 'icon-box';
+                // تدوير الصندوق ليكون في منتصف القطاع
+                const midAngle = (i * segmentSize) + (segmentSize / 2);
+                box.style.transform = `rotate(${midAngle}deg)`;
                 
-                const label = document.createElement('div');
-                label.className = 'wheel-label';
-                label.style.transform = `rotate(${centerAngle}deg)`;
-                label.innerHTML = `<div class="label-content"><span style="font-size:1.2rem">${seg.icon}</span><span>${seg.text}</span></div>`;
-                
-                wheel.appendChild(label);
+                // الأيقونة (مقلوبة -90 درجة لأن الصندوق يدور)
+                box.innerHTML = `<div class="icon-content" style="transform: rotate(90deg);">${seg.icon}</div>`;
+                iconContainer.appendChild(box);
             });
         }
 
         function spinWheel() {
-            const wheel = document.getElementById('the-wheel');
+            const bg = document.getElementById('wheel-bg');
+            const icons = document.getElementById('wheel-icons');
             const spinBtn = document.querySelector('#spin-game-area .btn-gold');
             if(spinBtn.disabled) return;
             
@@ -611,37 +614,21 @@
             const randomDeg = Math.floor(1800 + Math.random() * 1800); 
             currentRotation += randomDeg;
             
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
+            // Rotate both layers
+            bg.style.transform = `rotate(${currentRotation}deg)`;
+            icons.style.transform = `rotate(${currentRotation}deg)`;
             
             setTimeout(() => {
                 const numSegments = wheelSegments.length;
                 const segAngle = 360 / numSegments;
                 const actualDeg = currentRotation % 360;
                 
-                // Winning index calculation (Pointer at TOP)
-                const winningIndex = Math.floor(((360 - actualDeg + 360) % 360) / segAngle);
+                // معادلة حساب الفائز الدقيقة (المؤشر عند 0 درجة)
+                const winningAngle = (360 - actualDeg) % 360;
+                const winningIndex = Math.floor(winningAngle / segAngle);
                 
-                // Adjust for 0-index based on rotation direction.
-                // With conic-gradient starting at 0 (top), and rotation clockwise:
-                // If rot=0, pointer at index 0. If rot=-22.5, pointer at index 1.
-                // Actually simpler:
-                // The gradient starts at 0deg (Top). Index 0 is 0-22.5.
-                // If we rotate 90deg clockwise, top is now 270deg of the wheel (Index 12).
-                // Let's rely on the math:
-                // winningAngle is the angle on the wheel that is currently at the top.
-                // Index = floor(winningAngle / 22.5).
-                
-                // Correct logic:
-                const result = wheelSegments[(wheelSegments.length - 1) - winningIndex]; 
-                // Testing showed standard math often needs inversion or offset with CSS rotation.
-                // Let's use the simplest reliable offset:
-                // Index 0 is at 0-22.5 deg.
-                // The pointer points at 0 deg.
-                // If wheel rotates X deg, the angle under pointer is (360 - X%360).
-                const angleUnderPointer = (360 - actualDeg) % 360;
-                const exactIndex = Math.floor(angleUnderPointer / segAngle);
-                
-                showWheelResult(wheelSegments[exactIndex]);
+                const result = wheelSegments[winningIndex];
+                showWheelResult(result);
                 spinBtn.disabled = false;
             }, 4000); 
         }
