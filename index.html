@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hot Night 🔥 | باقة 8 ألعاب</title>
+    <title>Hot Night 🔥 | النسخة الكاملة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #d4af37; /* ذهبي */
             --accent: #e50914; /* أحمر */
             --blue: #00bfff;
-            --purple: #8a2be2;
-            --green: #2ecc71; /* للعبة العجلة */
+            --green: #2ecc71;
             --bg: #050505;
-            --card-bg: #111;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; outline: none; }
@@ -31,8 +29,7 @@
             display: none; width: 100%; height: 100%;
             position: relative; z-index: 2;
             flex-direction: column; align-items: center;
-            padding: 15px;
-            overflow-y: auto;
+            padding: 15px; overflow-y: auto;
             opacity: 0; transition: opacity 0.3s ease-in;
         }
         .screen.active { display: flex; opacity: 1; }
@@ -129,7 +126,7 @@
         .step-desc { color: #ccc; font-size: 0.8rem; line-height: 1.5; }
         .guide-intro { color: #aaa; text-align: center; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.6; }
 
-        /* --- Game 1-4 Styles (Flip Cards) --- */
+        /* --- أنماط الألعاب السابقة --- */
         .card-stage { perspective: 1000px; width: 100%; max-width: 320px; height: 320px; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
         .flipper { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); }
         .front, .back {
@@ -142,12 +139,11 @@
         .flipped { transform: rotateY(180deg); }
         .text-content { font-size: 1.35rem; font-weight: bold; line-height: 1.5; color: #fff; }
 
-        /* --- Game 6 Styles (Roleplay) --- */
         .rp-box { background: #111; border: 1px solid var(--accent); border-radius: 20px; padding: 25px; width: 100%; max-width: 350px; margin: auto; text-align: right; }
         .rp-label { color: var(--accent); font-size: 0.9rem; margin-bottom: 5px; font-weight: bold; }
         .rp-val { color: white; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-        /* --- Game 7 Styles (Catch Me Board) --- */
+        /* Catch Me Styles */
         .board-container {
             flex-grow: 1; overflow-y: auto; padding: 20px 10px; display: flex; flex-direction: column-reverse;
             align-items: center; gap: 8px; width: 100%; background-image: radial-gradient(#222 1px, transparent 1px);
@@ -182,46 +178,67 @@
         .catch-title { font-size: 1.4rem; color: var(--primary); margin-bottom: 10px; font-weight: 900; }
         .catch-desc { font-size: 1rem; color: #ddd; line-height: 1.6; margin-bottom: 20px; }
 
-        /* --- Game 8 Styles (Spin Wheel - 16 Segments) --- */
-        .spin-turn-indicator {
+        /* ==================================================
+           STYLES: WHEEL OF FORTUNE (المحسنة جداً)
+           ================================================== */
+        .spin-header {
             text-align: center; margin-bottom: 20px;
             background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 15px;
-            border: 1px solid var(--green);
+            border: 1px solid var(--green); display: flex; justify-content: center; gap: 10px;
         }
+        
         .wheel-container {
-            width: 320px; height: 320px; position: relative; border-radius: 50%;
-            border: 5px solid #222; box-shadow: 0 0 30px rgba(0,0,0,0.5); overflow: hidden; margin: 0 auto;
+            width: 330px; height: 330px; position: relative; border-radius: 50%;
+            border: 8px solid #222; box-shadow: 0 0 40px rgba(46, 204, 113, 0.3); 
+            overflow: hidden; margin: 0 auto;
         }
+        
+        /* القرص الدوار */
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; position: relative;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); /* Realistic spin */
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); /* Spin effect */
         }
+
+        /* المثلثات (القطاعات) - استخدام skew لعمل شكل المثلث */
         .segment {
             position: absolute; width: 50%; height: 50%;
-            top: 50%; left: 50%; transform-origin: 0% 0%;
-            border: 1px solid rgba(0,0,0,0.2); /* Subtle separator */
+            top: 50%; left: 50%;
+            transform-origin: 0% 0%;
+            /* 16 segments -> 360/16 = 22.5 deg per segment */
+            /* skewY = 90 - 22.5 = 67.5 */
+            border: 1px solid rgba(0,0,0,0.1); /* فاصل خفيف */
         }
+
+        /* محتوى كل قطاع */
         .seg-content {
-            position: absolute; left: 50%; top: 50%;
-            text-align: center; width: 140px;
-            /* Adjustments for 16 segments center alignment */
+            position: absolute; left: 20px; top: 30px; 
+            text-align: center; width: 120px;
+            /* عكس الـ Skew عشان الكلام يبان معدول */
             transform-origin: 0 0;
+            display: flex; flex-direction: column; align-items: center;
         }
-        .seg-icon { font-size: 1.2rem; display: block; margin-bottom: 3px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
-        .seg-text { font-size: 0.65rem; font-weight: 800; color: white; text-shadow: 1px 1px 3px black; white-space: nowrap; }
+        .seg-icon { font-size: 1.3rem; margin-bottom: 2px; filter: drop-shadow(1px 1px 1px black); }
+        .seg-text { font-size: 0.7rem; font-weight: 800; color: white; text-shadow: 1px 1px 2px black; }
+
+        /* المؤشر (السهم) */
         .pointer {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent;
-            border-top: 35px solid var(--green); z-index: 10; filter: drop-shadow(0 3px 3px black);
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; 
+            border-left: 20px solid transparent; 
+            border-right: 20px solid transparent;
+            border-top: 40px solid var(--green); 
+            z-index: 20; filter: drop-shadow(0 4px 4px black);
         }
+
         .wheel-result-card {
             background: #111; border: 3px solid var(--green); padding: 25px; border-radius: 25px;
             text-align: center; width: 90%; max-width: 380px;
             box-shadow: 0 0 50px rgba(46, 204, 113, 0.2);
         }
         #wheel-result-desc {
-            color: #ccc; font-size: 1rem; line-height: 1.6; margin: 20px 0;
+            color: #ddd; font-size: 1.1rem; line-height: 1.6; margin: 20px 0;
             background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;
+            border: 1px solid #333;
         }
 
         @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
@@ -250,10 +267,7 @@
         <div class="wheel-result-card">
             <div id="wheel-result-icon" style="font-size:4rem; margin-bottom:5px;"></div>
             <h2 id="wheel-result-title" style="color:var(--green); margin:0; font-weight:900; font-size:1.6rem;"></h2>
-            
-            <p id="wheel-result-desc"></p>
-            
-            <button class="btn-gold" style="background:linear-gradient(90deg, var(--green), #27ae60); border:none;" onclick="closeWheelModal()">نفذنا الأمر 😉</button>
+            <p id="wheel-result-desc"></p> <button class="btn-gold" style="background:linear-gradient(90deg, var(--green), #27ae60); border:none;" onclick="closeWheelModal()">نفذنا الأمر 😉</button>
         </div>
     </div>
 
@@ -389,9 +403,9 @@
             <div class="dummy-space"></div>
         </div>
         
-        <div class="spin-turn-indicator">
-            <span style="color:#aaa; font-size:0.9rem;">الدور على:</span>
-            <span id="spin-player" style="color:var(--green); font-weight:bold; font-size:1.1rem;">الزوج 👨</span>
+        <div class="spin-header">
+            <span style="color:#aaa; font-weight:bold;">الدور على:</span>
+            <span id="spin-player" style="color:var(--green); font-weight:900;">الزوج 👨</span>
         </div>
 
         <div style="position:relative; margin-top: 20px;">
@@ -407,11 +421,11 @@
 
     <script>
         // ==========================================
-        // 1. DATA
+        // 1. DATA (البيانات العملاقة)
         // ==========================================
+        // (ملاحظة: يجب نسخ المحتوى الضخم الذي كتبته لك سابقاً في الـ db هنا، سأضع عينة فقط للاختصار)
         const db = {
-            // (بيانات الكروت السابقة - مختصرة للعرض)
-            stage1: [{ t: "b", q: "مسابقة نظرات." }, { t: "m", q: "قلد حماتك." }],
+            stage1: [{ t: "b", q: "مسابقة نظرات." }], // انسخ الـ 100 سؤال هنا
             stage2: [{ t: "b", q: "حضن دقيقة." }],
             stage3: [{ t: "m", q: "بوس الرقبة." }],
             stage4: [{ t: "f", q: "انتي الملكة." }],
@@ -419,35 +433,31 @@
             roleplays: [{ chars: "الدكتور والمريضة", wear: "بالطو", plot: "كشف شامل." }]
         };
 
-        // بيانات لعبة Catch Me (مختصرة)
         const catchDB = [
             { type: "start", text: "البداية", icon: "🏁" },
             { type: "blue", text: "بوسة", desc: "بوسة رقيقة", icon: "💋" },
-            // ... باقي البيانات
+            // ... (باقي المربعات كما في الكود السابق)
             { type: "finish", text: "النهاية", desc: "علاقة كاملة 🔥", icon: "🎉" }
         ];
 
-        // ==========================================
-        // بيانات عجلة الحظ (16 اختيار مع وصف دقيق)
-        // ==========================================
+        // --- بيانات عجلة الحظ (16 مثلث ملون بدقة) ---
         const wheelSegments = [
-            // ألوان متدرجة (أحمر، برتقالي، أصفر، أخضر، أزرق، بنفسجي، وردي...)
-            { text: "بوسة فرنسية", icon: "💋", color: "#e74c3c", desc: "قبلة عميقة ومثيرة لمدة لا تقل عن دقيقة كاملة." },
-            { text: "مساج رقبة", icon: "💆", color: "#e67e22", desc: "الطرف الآخر يعملك مساج للرقبة والأكتاف لمدة 3 دقايق." },
-            { text: "همس قذر", icon: "🗣️", color: "#f1c40f", desc: "همس في الأذن بأكثر خيال جريء نفسك فيه دلوقتي." },
-            { type: "action", text: "لعق", icon: "👅", color: "#2ecc71", desc: "استخدم لسانك لمداعبة منطقة حساسة يختارها شريكك." },
-            { text: "Oral", icon: "🍭", color: "#3498db", desc: "جنس فموي للطرف الذي لف العجلة، حتى يطلب التوقف." },
-            { text: "Doggy", icon: "🐕", color: "#9b59b6", desc: "ممارسة العلاقة في وضعية الدوجي (من الخلف)." },
-            { text: "تحكم كامل", icon: "👑", color: "#e91e63", desc: "أنت الملك لمدة 5 دقائق. كل طلباتك أوامر تنفذ فوراً." },
-            { text: "69", icon: "♋", color: "#c0392b", desc: "وضعية 69 الشهيرة للمتعة المتبادلة في نفس الوقت." },
-            { text: "تعري بطيء", icon: "👙", color: "#d35400", desc: "قم بأداء رقصة تعري (Striptease) بطيئة ومثيرة لشريكك." },
-            { text: "عضة حب", icon: "🧛", color: "#f39c12", desc: "اترك علامة (عضة خفيفة أو مص) على رقبة أو كتف شريكك." },
-            { text: "يدوية", icon: "👋", color: "#27ae60", desc: "مداعبة يدوية (Handjob/Fingering) للوصول للنشوة." },
-            { text: "على الواقف", icon: "🧍", color: "#2980b9", desc: "ممارسة العلاقة السريعة في وضعية الوقوف (استندوا على حائط)." },
-            { text: "الفارسة", icon: "🤠", color: "#8e44ad", desc: "وضعية الفارسة (الزوجة في الأعلى) وهي التي تتحكم بالكامل." },
-            { text: "عيون مغمضة", icon: "🙈", color: "#d81b60", desc: "الطرف الآخر يغمض عينك ويلمسك في مكان مفاجئ." },
-            { text: "ريشة/ثلج", icon: "🪶", color: "#ff5722", desc: "استخدام أداة خارجية (ريشة، قطعة ثلج، زيت) للمداعبة الحسية." },
-            { text: "حرية مطلقة", icon: "😈", color: "#7f8c8d", desc: "الكارت الذهبي! افعل بشريكك ما يحلو لك تماماً الآن." }
+            { text: "بوسة", icon: "💋", color: "#e74c3c", desc: "بوسة فرنسية عميقة لمدة دقيقة." },
+            { text: "مساج", icon: "💆", color: "#e67e22", desc: "مساج للرقبة والكتاف لمدة 3 دقايق." },
+            { text: "همس", icon: "🗣️", color: "#f1c40f", desc: "همس في الأذن بأكثر خيال نفسك فيه." },
+            { text: "لعق", icon: "👅", color: "#2ecc71", desc: "مداعبة باللسان لمنطقة حساسة." },
+            { text: "Oral", icon: "🍭", color: "#1abc9c", desc: "جنس فموي حتى تطلب التوقف." },
+            { text: "Doggy", icon: "🐕", color: "#3498db", desc: "علاقة في وضعية الدوجي." },
+            { text: "تحكم", icon: "👑", color: "#9b59b6", desc: "أنت الملك لمدة 5 دقايق." },
+            { text: "69", icon: "♋", color: "#8e44ad", desc: "وضعية 69 للمتعة المتبادلة." },
+            { text: "تعري", icon: "👙", color: "#ff4081", desc: "رقصة تعري (Striptease) بطيئة." },
+            { text: "عضة", icon: "🧛", color: "#f44336", desc: "عضة خفيفة (Love Bite) في الرقبة." },
+            { text: "يدوية", icon: "👋", color: "#ff9800", desc: "مداعبة يدوية للوصول للنشوة." },
+            { text: "واقف", icon: "🧍", color: "#ffeb3b", desc: "علاقة سريعة وقوفاً." },
+            { text: "فارسة", icon: "🤠", color: "#cddc39", desc: "الزوجة في الأعلى وتتحكم." },
+            { text: "مغمض", icon: "🙈", color: "#009688", desc: "غمض عينك واستقبل لمسات مفاجئة." },
+            { text: "أداة", icon: "🪶", color: "#03a9f4", desc: "استخدم ريشة أو ثلج للمداعبة." },
+            { text: "حرية", icon: "😈", color: "#607d8b", desc: "افعل بشريكك ما يحلو لك." }
         ];
 
         // ==========================================
@@ -627,7 +637,7 @@
         }
 
         // ==========================================
-        // 6. SPIN WHEEL LOGIC (16 Segments & Accurate)
+        // 6. WHEEL OF FORTUNE LOGIC (ACCURATE)
         // ==========================================
         let wheelCreated = false;
         let currentRotation = 0;
@@ -637,10 +647,10 @@
         function startSpinGame() {
             show('spin-game-area');
             if (!wheelCreated) { createWheel(); wheelCreated = true; }
-            updateSpinTurnUI();
+            updateSpinUI();
         }
 
-        function updateSpinTurnUI() {
+        function updateSpinUI() {
             const p = spinPlayers[spinTurn];
             document.getElementById('spin-player').innerText = `${p.name} ${p.icon}`;
         }
@@ -648,18 +658,18 @@
         function createWheel() {
             const wheel = document.getElementById('the-wheel');
             const numSegments = wheelSegments.length; // 16
-            const segAngle = 360 / numSegments; // 22.5 degrees
+            const segAngle = 360 / numSegments; // 22.5
             
             wheelSegments.forEach((seg, i) => {
                 const el = document.createElement('div');
                 el.className = 'segment';
                 el.style.backgroundColor = seg.color;
-                // Rotate to position, then skew to make pie slice shape
+                // إنشاء المثلث باستخدام Skew
                 el.style.transform = `rotate(${i * segAngle}deg) skewY(-${90 - segAngle}deg)`;
                 
                 const content = document.createElement('div');
                 content.className = 'seg-content';
-                // Counter-skew and counter-rotate to center text in the slice
+                // تعديل وضع المحتوى ليكون في منتصف المثلث
                 content.style.transform = `skewY(${90 - segAngle}deg) rotate(${segAngle / 2}deg)`; 
                 content.innerHTML = `<span class="seg-icon">${seg.icon}</span><span class="seg-text">${seg.text}</span>`;
                 
@@ -675,42 +685,42 @@
             
             spinBtn.disabled = true;
             
-            // Spin roughly 5-10 times (1800-3600 deg) + random angle
+            // Random spin (at least 5 full rotations)
             const randomDeg = Math.floor(1800 + Math.random() * 1800); 
             currentRotation += randomDeg;
             
             wheel.style.transform = `rotate(${currentRotation}deg)`;
             
             setTimeout(() => {
-                // --- Accurate Winning Calculation ---
-                const numSegments = wheelSegments.length; // 16
-                const segAngle = 360 / numSegments; // 22.5
+                // حساب الفائز بدقة عالية
+                const numSegments = wheelSegments.length;
+                const segAngle = 360 / numSegments;
                 const actualDeg = currentRotation % 360;
                 
-                // The pointer is at the top (0 deg). CSS rotation is clockwise.
-                // To find the winning segment, we need to know which segment's center is closest to 0 deg.
-                // The mathematical formula to pinpoint the exact segment under the top pointer:
-                const winningIndex = Math.floor(((360 - actualDeg + (segAngle/2)) % 360) / segAngle);
+                // المؤشر عند 0 درجة (فوق). العجلة تدور مع عقارب الساعة.
+                // المثلث الفائز هو الذي "يلمس" الصفر الآن.
+                // المعادلة: (360 - الزاوية الحالية) % 360 = زاوية المثلث الفائز بالنسبة لبداية العجلة
+                const winningAngle = (360 - actualDeg) % 360;
+                const winningIndex = Math.floor(winningAngle / segAngle);
                 
                 const result = wheelSegments[winningIndex];
                 showWheelResult(result);
                 spinBtn.disabled = false;
-            }, 4000); // 4s matches CSS transition time
+            }, 4000); 
         }
 
         function showWheelResult(res) {
             const modal = document.getElementById('wheel-modal');
             document.getElementById('wheel-result-icon').innerText = res.icon;
             document.getElementById('wheel-result-title').innerText = res.text;
-            document.getElementById('wheel-result-desc').innerText = res.desc; // الوصف التفصيلي
+            document.getElementById('wheel-result-desc').innerText = res.desc; // الوصف الجديد
             modal.style.display = 'flex';
         }
 
         function closeWheelModal() {
             document.getElementById('wheel-modal').style.display = 'none';
-            // Switch turn after finishing
             spinTurn = (spinTurn === 0) ? 1 : 0;
-            updateSpinTurnUI();
+            updateSpinUI();
         }
 
     </script>
