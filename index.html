@@ -509,8 +509,12 @@
         // ==========================================
         // 5. CATCH ME LOGIC
         // ==========================================
-        const catchPlayers = [ { name: "الزوج", icon: "👨", pos: 0, css: "p1-token" }, { name: "الزوجة", icon: "👩", pos: 0, css: "p2-token" } ];
-        let cTurn = 0; let boardCreated = false;
+        const catchPlayers = [ 
+            { name: "الزوج", icon: "👨", pos: 0, css: "p1-token" }, 
+            { name: "الزوجة", icon: "👩", pos: 0, css: "p2-token" } 
+        ];
+        let cTurn = 0; 
+        let boardCreated = false;
 
         function startCatchMe() {
             show('catch-game-area');
@@ -518,16 +522,31 @@
         }
 
         function createCatchBoard() {
-            const board = document.getElementById('board'); board.innerHTML = "";
+            const board = document.getElementById('board'); 
+            board.innerHTML = "";
             let row = document.createElement('div'); row.className = 'row';
+            
+            // بناء اللوحة من 30 لـ 0
             for (let i = 30; i >= 0; i--) {
+                // حماية من الأخطاء: لو الرقم مش موجود هات آخر واحد
                 const sqData = catchDB[i] || catchDB[catchDB.length-1];
+                
                 let z = 'red-zone';
-                if(i==0 || i==30) z='finish-zone'; else if(i<=10) z='blue-zone'; else if(i<=20) z='purple-zone';
+                if(i==0 || i==30) z='finish-zone'; 
+                else if(i<=10) z='blue-zone'; 
+                else if(i<=20) z='purple-zone';
+
                 const sq = document.createElement('div');
-                sq.className = `square ${z}`; sq.id = `sq-${i}`; sq.innerHTML = i===0 ? "Start" : i;
+                sq.className = `square ${z}`; 
+                sq.id = `sq-${i}`; 
+                sq.innerHTML = i===0 ? "Start" : i;
                 row.appendChild(sq);
-                if((30-i+1)%5===0 || i===0) { board.appendChild(row); row = document.createElement('div'); row.className = 'row'; }
+
+                if((30-i+1)%5===0 || i===0) { 
+                    board.appendChild(row); 
+                    row = document.createElement('div'); 
+                    row.className = 'row'; 
+                }
             }
             updateTokens();
         }
@@ -536,51 +555,85 @@
             document.querySelectorAll('.player-token').forEach(e=>e.remove());
             catchPlayers.forEach(p => {
                 const sq = document.getElementById(`sq-${p.pos}`);
-                if(sq) { const t = document.createElement('div'); t.className = `player-token ${p.css}`; sq.appendChild(t); }
+                if(sq) { 
+                    const t = document.createElement('div'); 
+                    t.className = `player-token ${p.css}`; 
+                    sq.appendChild(t); 
+                }
             });
         }
 
-        function rollDice() {
-            const btn = document.getElementById('dice');
+        function rollCatchDice() {
+            const btn = document.getElementById('catch-dice'); // ID الجديد
             if(btn.classList.contains('rolling')) return;
+            
             btn.classList.add('rolling');
             setTimeout(() => {
                 const r = Math.floor(Math.random()*6)+1;
-                btn.innerText = r; btn.classList.remove('rolling');
+                btn.innerText = r; 
+                btn.classList.remove('rolling');
                 moveCatchPlayer(r);
             }, 600);
         }
 
         function moveCatchPlayer(steps) {
-            const p = catchPlayers[cTurn]; let moved = 0;
+            const p = catchPlayers[cTurn]; 
+            let moved = 0;
+            
             const intv = setInterval(() => {
-                if(p.pos < 30) { p.pos++; updateTokens(); moved++; }
+                if(p.pos < 30) { 
+                    p.pos++; 
+                    updateTokens(); 
+                    moved++; 
+                }
+                
                 if(moved >= steps || p.pos >= 30) {
                     clearInterval(intv);
-                    setTimeout(()=>showCatchChallenge(p.pos), 500);
+                    setTimeout(() => showCatchChallenge(p.pos), 500);
                 }
             }, 300);
         }
 
         function showCatchChallenge(pos) {
             if(pos === 0) { switchCTurn(); return; }
-            const data = catchDB[pos];
+            
+            // هنا كان سبب المشكلة: التأكد من وجود البيانات
+            const data = catchDB[pos]; 
+            if(!data) { 
+                console.error("No data for pos:", pos); 
+                switchCTurn(); 
+                return; 
+            }
+
             const modal = document.getElementById('catch-modal');
             const content = document.getElementById('catch-card-content');
+            
             let color = 'var(--primary)';
             if(data.type === 'blue') color = 'var(--blue)';
             if(data.type === 'purple') color = 'var(--purple)';
+
             content.style.borderColor = color;
-            content.innerHTML = `<div class="catch-icon">${data.icon}</div><div class="catch-title" style="color:${color}">${data.text}</div><div class="catch-desc">${data.desc}</div><button class="btn-gold" style="background:${color}; border:none;" onclick="closeCatchModal()">نفذنا 😉</button>`;
+            content.innerHTML = `
+                <div class="catch-icon">${data.icon}</div>
+                <div class="catch-title" style="color:${color}">${data.text}</div>
+                <div class="catch-desc">${data.desc}</div>
+                <button class="btn-gold" style="background:${color}; border:none;" onclick="closeCatchModal()">نفذنا 😉</button>
+            `;
             modal.style.display = 'flex';
         }
 
         function closeCatchModal() {
             document.getElementById('catch-modal').style.display = 'none';
+            // لو وصل للنهاية
             if(catchPlayers[cTurn].pos >= 30) {
                 alert(`مبروك! ${catchPlayers[cTurn].name} كسب الليلة! 🎉`);
-                catchPlayers[0].pos=0; catchPlayers[1].pos=0; updateTokens(); cTurn=0;
-            } else { switchCTurn(); }
+                catchPlayers[0].pos=0; 
+                catchPlayers[1].pos=0; 
+                updateTokens(); 
+                cTurn=0;
+            } else { 
+                switchCTurn(); 
+            }
         }
 
         function switchCTurn() {
@@ -686,4 +739,5 @@
     </script>
 </body>
 </html>
+
 
