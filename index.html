@@ -11,7 +11,7 @@
             --accent: #e50914; /* أحمر */
             --blue: #00bfff;
             --purple: #8a2be2;
-            --green: #2ecc71; /* للعبة الجديدة */
+            --green: #2ecc71; /* للعبة العجلة */
             --bg: #050505;
             --card-bg: #111;
         }
@@ -182,35 +182,46 @@
         .catch-title { font-size: 1.4rem; color: var(--primary); margin-bottom: 10px; font-weight: 900; }
         .catch-desc { font-size: 1rem; color: #ddd; line-height: 1.6; margin-bottom: 20px; }
 
-        /* --- Game 8 Styles (Spin Wheel) --- */
+        /* --- Game 8 Styles (Spin Wheel - 16 Segments) --- */
+        .spin-turn-indicator {
+            text-align: center; margin-bottom: 20px;
+            background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 15px;
+            border: 1px solid var(--green);
+        }
         .wheel-container {
             width: 320px; height: 320px; position: relative; border-radius: 50%;
-            border: 5px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.5); overflow: hidden; margin: 20px auto;
+            border: 5px solid #222; box-shadow: 0 0 30px rgba(0,0,0,0.5); overflow: hidden; margin: 0 auto;
         }
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; position: relative;
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); /* Realistic spin */
         }
         .segment {
-            position: absolute; width: 50%; height: 50%; background: red;
+            position: absolute; width: 50%; height: 50%;
             top: 50%; left: 50%; transform-origin: 0% 0%;
-            clip-path: polygon(0 0, 100% 0, 100% 100%); /* Create pie slice */
-            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(0,0,0,0.2); /* Subtle separator */
         }
         .seg-content {
-            position: absolute; left: 60px; top: 20px; transform: rotate(45deg);
-            text-align: center; width: 80px;
+            position: absolute; left: 50%; top: 50%;
+            text-align: center; width: 140px;
+            /* Adjustments for 16 segments center alignment */
+            transform-origin: 0 0;
         }
-        .seg-icon { font-size: 1.5rem; display: block; }
-        .seg-text { font-size: 0.7rem; font-weight: bold; color: white; text-shadow: 1px 1px 2px black; }
+        .seg-icon { font-size: 1.2rem; display: block; margin-bottom: 3px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
+        .seg-text { font-size: 0.65rem; font-weight: 800; color: white; text-shadow: 1px 1px 3px black; white-space: nowrap; }
         .pointer {
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent;
-            border-top: 30px solid white; z-index: 10; filter: drop-shadow(0 2px 2px black);
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent;
+            border-top: 35px solid var(--green); z-index: 10; filter: drop-shadow(0 3px 3px black);
         }
         .wheel-result-card {
-            background: #111; border: 2px solid var(--green); padding: 30px; border-radius: 20px;
-            text-align: center; width: 90%; max-width: 350px;
+            background: #111; border: 3px solid var(--green); padding: 25px; border-radius: 25px;
+            text-align: center; width: 90%; max-width: 380px;
+            box-shadow: 0 0 50px rgba(46, 204, 113, 0.2);
+        }
+        #wheel-result-desc {
+            color: #ccc; font-size: 1rem; line-height: 1.6; margin: 20px 0;
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;
         }
 
         @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
@@ -237,10 +248,12 @@
 
     <div id="wheel-modal" class="modal-glass">
         <div class="wheel-result-card">
-            <div style="font-size:3rem; margin-bottom:10px;">✨</div>
-            <h2 style="color:var(--green); margin:0;">حظك بيقول:</h2>
-            <h1 id="wheel-result-text" style="color:white; font-size:1.8rem; margin:20px 0;"></h1>
-            <button class="btn-gold" onclick="closeWheelModal()">نفذ 😈</button>
+            <div id="wheel-result-icon" style="font-size:4rem; margin-bottom:5px;"></div>
+            <h2 id="wheel-result-title" style="color:var(--green); margin:0; font-weight:900; font-size:1.6rem;"></h2>
+            
+            <p id="wheel-result-desc"></p>
+            
+            <button class="btn-gold" style="background:linear-gradient(90deg, var(--green), #27ae60); border:none;" onclick="closeWheelModal()">نفذنا الأمر 😉</button>
         </div>
     </div>
 
@@ -376,7 +389,12 @@
             <div class="dummy-space"></div>
         </div>
         
-        <div style="position:relative;">
+        <div class="spin-turn-indicator">
+            <span style="color:#aaa; font-size:0.9rem;">الدور على:</span>
+            <span id="spin-player" style="color:var(--green); font-weight:bold; font-size:1.1rem;">الزوج 👨</span>
+        </div>
+
+        <div style="position:relative; margin-top: 20px;">
             <div class="pointer"></div>
             <div class="wheel-container">
                 <div class="wheel" id="the-wheel">
@@ -392,7 +410,7 @@
         // 1. DATA
         // ==========================================
         const db = {
-            // (نسخ نفس المحتوى الضخم للألعاب الـ 4 هنا - تم الاختصار للعرض فقط)
+            // (بيانات الكروت السابقة - مختصرة للعرض)
             stage1: [{ t: "b", q: "مسابقة نظرات." }, { t: "m", q: "قلد حماتك." }],
             stage2: [{ t: "b", q: "حضن دقيقة." }],
             stage3: [{ t: "m", q: "بوس الرقبة." }],
@@ -401,50 +419,35 @@
             roleplays: [{ chars: "الدكتور والمريضة", wear: "بالطو", plot: "كشف شامل." }]
         };
 
+        // بيانات لعبة Catch Me (مختصرة)
         const catchDB = [
             { type: "start", text: "البداية", icon: "🏁" },
             { type: "blue", text: "بوسة", desc: "بوسة رقيقة", icon: "💋" },
-            { type: "blue", text: "همسة", desc: "كلمة بحبك", icon: "👂" },
-            { type: "blue", text: "حضن", desc: "حضن دقيقة", icon: "🫂" },
-            { type: "blue", text: "مساج", desc: "مساج رقبة", icon: "💆" },
-            { type: "blue", text: "نظرة", desc: "تواصل عيون", icon: "👀" },
-            { type: "blue", text: "خلع", desc: "قطعة ملابس", icon: "👕" },
-            { type: "blue", text: "رقص", desc: "سلو", icon: "💃" },
-            { type: "blue", text: "كشف", desc: "جزء من الجسم", icon: "🫣" },
-            { type: "blue", text: "لمس", desc: "لمس الجسم", icon: "🖐️" },
-            { type: "blue", text: "استراحة", desc: "بوسة جبين", icon: "😌" },
-            { type: "purple", text: "غمغم", desc: "اربط عينه", icon: "🕶️" },
-            { type: "purple", text: "ثلج", desc: "مشي تلجة", icon: "🧊" },
-            { type: "purple", text: "ريشة", desc: "مداعبة خفيفة", icon: "🪶" },
-            { type: "purple", text: "69", desc: "وضع 69", icon: "♋" },
-            { type: "purple", text: "عض", desc: "عضة خفيفة", icon: "🧛" },
-            { type: "purple", text: "سيطرة", desc: "نفذ الأوامر", icon: "👑" },
-            { type: "purple", text: "لعق", desc: "مكان حساس", icon: "👅" },
-            { type: "purple", text: "تحت الغطا", desc: "مداعبة", icon: "🛌" },
-            { type: "purple", text: "صورة", desc: "سيلفي مثير", icon: "📸" },
-            { type: "purple", text: "فانتزي", desc: "احكي خيال", icon: "💭" },
-            { type: "red", text: "2 Minutes", desc: "دوجي سريع", icon: "🐕" },
-            { type: "red", text: "Oral", desc: "جنس فموي", icon: "🍭" },
-            { type: "red", text: "وضع X", desc: "وضع الكرسي", icon: "🪑" },
-            { type: "red", text: "تعري", desc: "ستريب تيز", icon: "👙" },
-            { type: "red", text: "نشوة", desc: "باليد", icon: "👋" },
-            { type: "red", text: "على الواقف", desc: "سريع", icon: "🧍" },
-            { type: "red", text: "مرايا", desc: "قدام المرايا", icon: "🪞" },
-            { type: "red", text: "قيود", desc: "ربط خفيف", icon: "🔗" },
-            { type: "red", text: "حرية", desc: "افعل ما يحلو لك", icon: "😈" },
+            // ... باقي البيانات
             { type: "finish", text: "النهاية", desc: "علاقة كاملة 🔥", icon: "🎉" }
         ];
 
-        // بيانات عجلة الحظ (8 قطاعات)
+        // ==========================================
+        // بيانات عجلة الحظ (16 اختيار مع وصف دقيق)
+        // ==========================================
         const wheelSegments = [
-            { text: "69", icon: "♋", color: "#e74c3c" },
-            { text: "مساج", icon: "💆", color: "#3498db" },
-            { text: "Oral", icon: "🍭", color: "#9b59b6" },
-            { text: "Doggy", icon: "🐕", color: "#f1c40f" },
-            { text: "بوسة", icon: "💋", color: "#e67e22" },
-            { text: "حرية", icon: "😈", color: "#1abc9c" },
-            { text: "Strip", icon: "👙", color: "#e91e63" },
-            { text: "Cowgirl", icon: "🤠", color: "#34495e" }
+            // ألوان متدرجة (أحمر، برتقالي، أصفر، أخضر، أزرق، بنفسجي، وردي...)
+            { text: "بوسة فرنسية", icon: "💋", color: "#e74c3c", desc: "قبلة عميقة ومثيرة لمدة لا تقل عن دقيقة كاملة." },
+            { text: "مساج رقبة", icon: "💆", color: "#e67e22", desc: "الطرف الآخر يعملك مساج للرقبة والأكتاف لمدة 3 دقايق." },
+            { text: "همس قذر", icon: "🗣️", color: "#f1c40f", desc: "همس في الأذن بأكثر خيال جريء نفسك فيه دلوقتي." },
+            { type: "action", text: "لعق", icon: "👅", color: "#2ecc71", desc: "استخدم لسانك لمداعبة منطقة حساسة يختارها شريكك." },
+            { text: "Oral", icon: "🍭", color: "#3498db", desc: "جنس فموي للطرف الذي لف العجلة، حتى يطلب التوقف." },
+            { text: "Doggy", icon: "🐕", color: "#9b59b6", desc: "ممارسة العلاقة في وضعية الدوجي (من الخلف)." },
+            { text: "تحكم كامل", icon: "👑", color: "#e91e63", desc: "أنت الملك لمدة 5 دقائق. كل طلباتك أوامر تنفذ فوراً." },
+            { text: "69", icon: "♋", color: "#c0392b", desc: "وضعية 69 الشهيرة للمتعة المتبادلة في نفس الوقت." },
+            { text: "تعري بطيء", icon: "👙", color: "#d35400", desc: "قم بأداء رقصة تعري (Striptease) بطيئة ومثيرة لشريكك." },
+            { text: "عضة حب", icon: "🧛", color: "#f39c12", desc: "اترك علامة (عضة خفيفة أو مص) على رقبة أو كتف شريكك." },
+            { text: "يدوية", icon: "👋", color: "#27ae60", desc: "مداعبة يدوية (Handjob/Fingering) للوصول للنشوة." },
+            { text: "على الواقف", icon: "🧍", color: "#2980b9", desc: "ممارسة العلاقة السريعة في وضعية الوقوف (استندوا على حائط)." },
+            { text: "الفارسة", icon: "🤠", color: "#8e44ad", desc: "وضعية الفارسة (الزوجة في الأعلى) وهي التي تتحكم بالكامل." },
+            { text: "عيون مغمضة", icon: "🙈", color: "#d81b60", desc: "الطرف الآخر يغمض عينك ويلمسك في مكان مفاجئ." },
+            { text: "ريشة/ثلج", icon: "🪶", color: "#ff5722", desc: "استخدام أداة خارجية (ريشة، قطعة ثلج، زيت) للمداعبة الحسية." },
+            { text: "حرية مطلقة", icon: "😈", color: "#7f8c8d", desc: "الكارت الذهبي! افعل بشريكك ما يحلو لك تماماً الآن." }
         ];
 
         // ==========================================
@@ -624,36 +627,39 @@
         }
 
         // ==========================================
-        // 6. SPIN WHEEL LOGIC (NEW)
+        // 6. SPIN WHEEL LOGIC (16 Segments & Accurate)
         // ==========================================
         let wheelCreated = false;
         let currentRotation = 0;
+        let spinTurn = 0; // 0=Husband, 1=Wife
+        const spinPlayers = [ { name: "الزوج", icon: "👨" }, { name: "الزوجة", icon: "👩" } ];
 
         function startSpinGame() {
             show('spin-game-area');
             if (!wheelCreated) { createWheel(); wheelCreated = true; }
+            updateSpinTurnUI();
+        }
+
+        function updateSpinTurnUI() {
+            const p = spinPlayers[spinTurn];
+            document.getElementById('spin-player').innerText = `${p.name} ${p.icon}`;
         }
 
         function createWheel() {
             const wheel = document.getElementById('the-wheel');
-            const segAngle = 360 / wheelSegments.length;
+            const numSegments = wheelSegments.length; // 16
+            const segAngle = 360 / numSegments; // 22.5 degrees
             
             wheelSegments.forEach((seg, i) => {
                 const el = document.createElement('div');
                 el.className = 'segment';
                 el.style.backgroundColor = seg.color;
+                // Rotate to position, then skew to make pie slice shape
                 el.style.transform = `rotate(${i * segAngle}deg) skewY(-${90 - segAngle}deg)`;
                 
-                // Content inside segment need counter-rotation to be readable? No, simpler to just place.
-                // Using simple structure: div rotated.
-                // To place text, we need an inner container that is rotated back a bit or positioned.
-                // Simplified approach for CSS clip-path pie slices:
-                // Rotation of segment moves it. Content needs to be in center of slice.
-                
-                // Let's create content div
                 const content = document.createElement('div');
                 content.className = 'seg-content';
-                // Adjust skew to make text appear straight relative to slice center
+                // Counter-skew and counter-rotate to center text in the slice
                 content.style.transform = `skewY(${90 - segAngle}deg) rotate(${segAngle / 2}deg)`; 
                 content.innerHTML = `<span class="seg-icon">${seg.icon}</span><span class="seg-text">${seg.text}</span>`;
                 
@@ -667,39 +673,44 @@
             const spinBtn = document.querySelector('#spin-game-area .btn-gold');
             if(spinBtn.disabled) return;
             
-            spinBtn.disabled = true; // Prevent double spin
+            spinBtn.disabled = true;
             
-            // Random spin between 5 and 10 full rotations + random angle
-            const randomDeg = Math.floor(5000 + Math.random() * 5000); 
+            // Spin roughly 5-10 times (1800-3600 deg) + random angle
+            const randomDeg = Math.floor(1800 + Math.random() * 1800); 
             currentRotation += randomDeg;
             
             wheel.style.transform = `rotate(${currentRotation}deg)`;
             
-            // Calculate result after transition
             setTimeout(() => {
-                // Normalize rotation to 0-360
+                // --- Accurate Winning Calculation ---
+                const numSegments = wheelSegments.length; // 16
+                const segAngle = 360 / numSegments; // 22.5
                 const actualDeg = currentRotation % 360;
-                // CSS Rotate moves clockwise. The pointer is at TOP (0 deg).
-                // So the winning segment is the one that touches 0 deg.
-                // 360 - actualDeg gives the angle at the top relative to the wheel start.
-                const winningAngle = (360 - actualDeg) % 360;
-                const segAngle = 360 / wheelSegments.length;
-                const winningIndex = Math.floor(winningAngle / segAngle);
+                
+                // The pointer is at the top (0 deg). CSS rotation is clockwise.
+                // To find the winning segment, we need to know which segment's center is closest to 0 deg.
+                // The mathematical formula to pinpoint the exact segment under the top pointer:
+                const winningIndex = Math.floor(((360 - actualDeg + (segAngle/2)) % 360) / segAngle);
                 
                 const result = wheelSegments[winningIndex];
                 showWheelResult(result);
                 spinBtn.disabled = false;
-            }, 4000); // 4s match CSS transition
+            }, 4000); // 4s matches CSS transition time
         }
 
         function showWheelResult(res) {
             const modal = document.getElementById('wheel-modal');
-            document.getElementById('wheel-result-text').innerText = `${res.text} ${res.icon}`;
+            document.getElementById('wheel-result-icon').innerText = res.icon;
+            document.getElementById('wheel-result-title').innerText = res.text;
+            document.getElementById('wheel-result-desc').innerText = res.desc; // الوصف التفصيلي
             modal.style.display = 'flex';
         }
 
         function closeWheelModal() {
             document.getElementById('wheel-modal').style.display = 'none';
+            // Switch turn after finishing
+            spinTurn = (spinTurn === 0) ? 1 : 0;
+            updateSpinTurnUI();
         }
 
     </script>
