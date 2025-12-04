@@ -246,6 +246,41 @@
         @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* --- Game 3: Elimination (أرض المعركة - Text Version) --- */
+        .elimination-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            width: 100%; max-width: 350px; margin: 20px auto;
+        }
+        .place-card {
+            aspect-ratio: 1 / 1; border-radius: 15px; 
+            background: #222; border: 2px solid var(--primary);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .place-icon { font-size: 2.5rem; margin-bottom: 5px; }
+        .place-name { font-size: 0.9rem; font-weight: bold; color: white; }
+
+        /* تأثير الحذف (لما نضغط عليه) */
+        .place-card.eliminated {
+            background: #111; border-color: #333; 
+            opacity: 0.3; transform: scale(0.9);
+            filter: grayscale(100%);
+        }
+        
+        /* تأثير الفائز (آخر واحد يتبقى) */
+        .place-card.winner {
+            background: var(--primary); border-color: white;
+            transform: scale(1.1); z-index: 10;
+            box-shadow: 0 0 20px var(--primary);
+        }
+        .place-card.winner .place-name { color: black; }
+
+        .turn-banner {
+            background: rgba(255,255,255,0.1); color: var(--primary); padding: 10px;
+            border-radius: 10px; text-align: center; font-weight: bold;
+            margin-bottom: 10px; border: 1px solid var(--primary); font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -308,6 +343,13 @@
             <div class="game-item" onclick="startGame('stage2')">
                 <img src="https://images.unsplash.com/photo-1621780030440-71c9ace77e05?q=80&w=400&fit=crop" alt="Love">
                 <div class="game-label"><div class="g-title">2. كلمة سر</div><div class="g-sub">رومانسية ومشاعر</div></div>
+            </div>
+            <div class="game-item" onclick="startEliminationGame()" style="border-color: #ff9800;">
+                <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=400&fit=crop" alt="Places">
+                <div class="game-label">
+                    <div class="g-title" style="color:#ff9800">3. أرض المعركة ⚔️</div>
+                    <div class="g-sub">تحديد مكان السهرة</div>
+                </div>
             </div>
             <div class="game-item" onclick="startGame('stage3')">
                 <img src="https://images.unsplash.com/photo-1596131398989-6256eb88c0b7?q=80&w=400&fit=crop" alt="Touch">
@@ -421,7 +463,20 @@
 
         <button class="btn-gold" style="width:200px; margin-top:40px; background: linear-gradient(90deg, #2ecc71, #27ae60);" onclick="spinWheel()">لف العجلة 💫</button>
     </div>
+<div id="elimination-area" class="screen">
+        <div class="top-nav">
+            <button class="exit-btn" onclick="goHome()">✕</button>
+            <h2 class="nav-title" style="color:#ff9800;">أرض المعركة ⚔️</h2>
+            <div class="dummy-space"></div>
+        </div>
 
+        <div class="turn-banner" id="elim-turn">الدور على: الزوج 👨 (احذف مكان)</div>
+
+        <div class="elimination-grid" id="places-grid">
+            </div>
+
+        <button class="btn-gold" id="reset-elim-btn" style="display:none; margin-top:20px;" onclick="resetElimination()">لعبة جديدة 🔄</button>
+    </div>
     <script>
         // ==========================================
         // 1. DATA (البيانات العملاقة)
@@ -867,9 +922,112 @@ function createCatchBoard() {
             updateSpinUI();
         }
 
+        // ==========================================
+        // 9. ELIMINATION GAME (أرض المعركة)
+        // ==========================================
+        
+        // 9 أماكن محددة (نص وأيقونة)
+        const placesData = [
+            { id: 1, name: "السرير", icon: "🛏️" },
+            { id: 2, name: "الكنبة", icon: "🛋️" },
+            { id: 3, name: "المطبخ", icon: "🍳" },
+            { id: 4, name: "تحت الدش", icon: "🚿" },
+            { id: 5, name: "السجادة", icon: "🧶" }, // الأرض
+            { id: 6, name: "الكرسي", icon: "🪑" },
+            { id: 7, name: "المرايا", icon: "🪞" },
+            { id: 8, name: "السفرة", icon: "🍽️" },
+            { id: 9, name: "الغسالة", icon: "🧺" }  // أو "على الواقف" حسب رغبتك
+        ];
+
+        let activePlacesCount = 9;
+        let elimTurn = 0; // 0=الزوج, 1=الزوجة
+
+        function startEliminationGame() {
+            show('elimination-area');
+            resetElimination();
+        }
+
+        function resetElimination() {
+            const grid = document.getElementById('places-grid');
+            grid.innerHTML = "";
+            activePlacesCount = 9;
+            elimTurn = 0;
+            updateElimTurnUI();
+            document.getElementById('reset-elim-btn').style.display = 'none';
+
+            placesData.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'place-card';
+                card.id = `p-${p.id}`;
+                card.onclick = () => eliminatePlace(p.id);
+                
+                card.innerHTML = `
+                    <div class="place-icon">${p.icon}</div>
+                    <div class="place-name">${p.name}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function eliminatePlace(id) {
+            // لو فاضل مكان واحد، مينفعش نحذفه (ده الفايز)
+            if (activePlacesCount <= 1) return;
+
+            const card = document.getElementById(`p-${id}`);
+            if (card.classList.contains('eliminated')) return;
+
+            // حذف المكان
+            card.classList.add('eliminated');
+            activePlacesCount--;
+
+            // تبديل الدور
+            elimTurn = (elimTurn === 0) ? 1 : 0;
+            updateElimTurnUI();
+
+            // لو تبقى مكان واحد
+            if (activePlacesCount === 1) {
+                declareWinnerPlace();
+            }
+        }
+
+        function updateElimTurnUI() {
+            const banner = document.getElementById('elim-turn');
+            if (elimTurn === 0) {
+                banner.innerText = "الدور على: الزوج 👨 (احذف مكان مش عايزه)";
+                banner.style.borderColor = "#00bfff";
+                banner.style.color = "#00bfff";
+            } else {
+                banner.innerText = "الدور على: الزوجة 👩 (احذفي مكان مش عايزاه)";
+                banner.style.borderColor = "#ff007f";
+                banner.style.color = "#ff007f";
+            }
+        }
+
+        function declareWinnerPlace() {
+            const allCards = document.querySelectorAll('.place-card');
+            let winnerText = "";
+            
+            allCards.forEach(card => {
+                if (!card.classList.contains('eliminated')) {
+                    card.classList.add('winner');
+                    winnerText = card.querySelector('.place-name').innerText;
+                }
+            });
+
+            const banner = document.getElementById('elim-turn');
+            banner.innerText = `🎉 المكان المختار هو: ${winnerText}`;
+            banner.style.color = "#d4af37"; // ذهبي
+            banner.style.borderColor = "#d4af37";
+            
+            document.getElementById('reset-elim-btn').style.display = 'block';
+            
+            // احتفال بسيط
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        }
     </script>
 </body>
 </html>
+
 
 
 
