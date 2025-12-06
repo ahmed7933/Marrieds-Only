@@ -355,39 +355,55 @@
             document.getElementById('selected-plan-display').innerText = val;
         }
 
-        function handleSignup(e) {
+// دالة التسجيل الجديدة (المتوافقة مع التحديث)
+        async function handleSignup(e) {
             e.preventDefault();
             const btn = document.querySelector('#signup-form button');
             const name = document.getElementById('s-name').value;
             const phone = document.getElementById('s-phone').value;
             const plan = document.getElementById('s-plan').value;
 
-            btn.innerText = "جاري إرسال الطلب...";
+            btn.innerText = "جاري التسجيل...";
             btn.disabled = true;
+            btn.style.opacity = "0.7";
 
-            // إرسال البيانات (POST or GET workaround)
-            // هنا سنستخدم GET بسيط للإرسال للسيرفر ليسجل الطلب Pending
-            // (تأكد أن السكريبت في جوجل يدعم استقبال الاسم ورقم الهاتف في doGet أو doPost)
-            
-            // للتسهيل: سنعرض رسالة النجاح فوراً ونعتبر الطلب وصل (في النسخة البسيطة)
-            // أو نستخدم fetch لإرسالها فعلياً
-            
-            fetch(`${API_URL}?action=signup&name=${name}&phone=${phone}&plan=${plan}`, { mode: 'no-cors' })
-            .then(() => {
-                // عرض رسالة النجاح
-                document.getElementById('signup-form').style.display = 'none';
-                document.getElementById('success-msg').style.display = 'block';
-            })
-            .catch(() => {
-                alert("تأكد من الاتصال بالإنترنت");
+            try {
+                // إرسال البيانات للسيرفر
+                // لاحظ: action=signup
+                const response = await fetch(`${API_URL}?action=signup&name=${name}&phone=${phone}&plan=${plan}`);
+                const data = await response.json();
+
+                if (data.result === "success") {
+                    // نجحنا! نخفي الفورم ونظهر الكود
+                    document.getElementById('signup-form').style.display = 'none';
+                    document.getElementById('success-msg').style.display = 'block';
+                    
+                    // عرض الكود اللي جالنا من السيرفر
+                    document.getElementById('generated-code').innerText = data.code;
+                    
+                    // تخزين الكود مؤقتاً لسهولة النسخ
+                    localStorage.setItem('temp_code', data.code);
+                } else {
+                    alert("حدث خطأ أثناء التسجيل، حاول مرة أخرى.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("تأكد من الاتصال بالإنترنت!");
+            } finally {
+                btn.innerText = "تسجيل والحصول على الكود";
                 btn.disabled = false;
-                btn.innerText = "تأكيد وطلب الكود";
-            });
+                btn.style.opacity = "1";
+            }
         }
 
-        // ... (باقي دوال الـ Login والـ Games كما هي) ...
-        // ...
+        function copyCode() {
+            const code = document.getElementById('generated-code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert("تم نسخ الكود: " + code);
+            });
+        }
         
     </script>
 </body>
 </html>
+
