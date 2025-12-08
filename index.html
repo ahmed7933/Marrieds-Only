@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hot Night 🔥 | النسخة الكاملة</title>
@@ -293,12 +294,6 @@
     </style>
 </head>
 <body>
-<div id="welcome-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#050505; z-index:9999; display:flex; justify-content:center; align-items:center; flex-direction:column; transition: opacity 0.5s;">
-        <div class="logo" style="margin-bottom:20px; font-size:3rem;">🔥</div>
-        <h1 style="color:var(--primary); margin-bottom:10px; font-size: 2rem;">HOT NIGHT</h1>
-        <p style="color:#888; margin-bottom:30px; font-family:'Cairo';">اضغط للبدء وتفعيل الصوت 🔊</p>
-        <button class="btn-gold" style="width:200px;" onclick="initApp()">ابدأ السهرة 🚀</button>
-    </div>
     <div id="modal-guide" class="modal-glass">
         <div class="guide-content">
             <h2 style="color:white; text-align:center; margin-top:0;">🌙 الخريطة الكاملة</h2>
@@ -527,6 +522,180 @@
     </div>
 
     <script>
+// ==========================================
+    // 1. SYSTEM CORE (SaaS & Security Logic)
+    // ==========================================
+    
+    // 🔴 IMPORTANT: Replace this URL with your Google Web App URL 🔴
+    const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE"; 
+    
+    let fpPromise = FingerprintJS.load();
+
+    // --- Security: Anti-Theft Protection ---
+    document.addEventListener('contextmenu', event => event.preventDefault()); // Block Right Click
+    document.onkeydown = function(e) {
+        // Block F12, Ctrl+U, Ctrl+Shift+I
+        if(e.keyCode == 123) return false; 
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+    }
+
+    // --- Subscription Flow (Register) ---
+    function openRegister(plan) {
+        document.getElementById('reg-plan').value = plan;
+        document.getElementById('register-modal').classList.add('show');
+        document.getElementById('register-modal').style.display = 'flex';
+    }
+
+    function submitRegistration() {
+        const name = document.getElementById('reg-name').value;
+        const phone = document.getElementById('reg-phone').value;
+        const plan = document.getElementById('reg-plan').value;
+        const btn = document.getElementById('reg-btn');
+        
+        if(!name || !phone) return alert("من فضلك أدخل الاسم ورقم الهاتف");
+        
+        btn.innerText = "جاري الحجز...";
+        btn.disabled = true;
+
+        // Send to Google Sheets
+        fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Critical for Google Apps Script
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: "register", name: name, phone: phone, plan: plan })
+        }).then(() => {
+            // Success Scenario
+            document.getElementById('register-modal').classList.remove('show');
+            document.getElementById('register-modal').style.display = 'none';
+            showSuccessModal(name, phone, plan);
+            btn.innerText = "تأكيد الطلب";
+            btn.disabled = false;
+        }).catch(err => {
+            alert("حدث خطأ في الاتصال، تأكد من الإنترنت");
+            btn.disabled = false;
+        });
+    }
+
+    function showSuccessModal(name, phone, plan) {
+        // 🔴 CHANGE THIS TO YOUR NUMBER 🔴
+        const myNumber = "2010XXXXXXXXX"; 
+        const displayNumber = "010XXXXXXXXX"; 
+
+        const modal = document.getElementById('modal-guide'); 
+        const msgText = `مرحباً، أنا ${name}.%0aرقمي: ${phone}%0aتم الاشتراك في باقة (${plan} شهر).%0aجاري إرسال صورة التحويل الآن..`;
+        const waLink = `https://wa.me/${myNumber}?text=${msgText}`;
+
+        // Override the guide modal temporarily for success message
+        modal.innerHTML = `
+            <div class="guide-content" style="text-align:center;">
+                <h2 style="color:var(--green); margin-top:0;">تم تسجيل الطلب بنجاح! ✅</h2>
+                <p style="color:#ddd; font-size:0.9rem;">أهلاً بك يا <b>${name}</b></p>
+                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin:15px 0;">
+                    <p style="margin:0; color:#aaa; font-size:0.8rem;">1. حول مبلغ الاشتراك فودافون كاش على:</p>
+                    <h2 style="color:var(--primary); margin:5px 0; letter-spacing:2px;">${displayNumber}</h2>
+                </div>
+                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:20px;">
+                    <p style="margin:0; color:#aaa; font-size:0.8rem;">2. اضغط هنا لإرسال الإيصال وتفعيل الكود:</p>
+                    <a href="${waLink}" target="_blank" style="text-decoration:none;">
+                        <button class="btn-gold" style="background: #25D366; color: white; border:none; margin-top:10px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);">
+                            تأكيد الدفع واتساب 💬
+                        </button>
+                    </a>
+                </div>
+                <button style="background:none; border:none; color:#666; cursor:pointer; font-size:0.8rem;" onclick="location.reload()">إغلاق والعودة</button>
+            </div>
+        `;
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+    }
+
+    // --- Login Flow (The Brain) ---
+    async function login() {
+        const code = document.getElementById('pass').value;
+        const btn = document.querySelector('.btn-pro'); // Make sure your login button has class btn-pro
+        const errorMsg = document.getElementById('error');
+        
+        if(!code) return;
+        
+        btn.innerText = "جاري التحقق...";
+        btn.disabled = true;
+        errorMsg.style.display = 'none';
+
+        try {
+            // 1. Capture Device Fingerprint
+            const fp = await fpPromise;
+            const result = await fp.get();
+            const fingerprint = result.visitorId;
+
+            // 2. Validate with Google Sheet
+            const response = await fetch(API_URL, {
+                redirect: "follow",
+                method: 'POST',
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ action: "login", code: code, fingerprint: fingerprint })
+            });
+            
+            const data = await response.json();
+            
+            if(data.success) {
+                // Login Successful
+                localStorage.setItem('hn_token', data.token); // Save session
+                
+                // Allow Audio Context
+                if (typeof audioCtx !== 'undefined' && audioCtx.state === 'suspended') audioCtx.resume();
+                
+                show('dashboard'); // Enter the App
+            } else {
+                // Login Failed (Banned, Wrong Code, or Over Limit)
+                errorMsg.innerText = "⚠️ " + data.msg;
+                errorMsg.style.display = 'block';
+            }
+        } catch(e) {
+            console.log(e);
+            errorMsg.innerText = "خطأ في الاتصال بالسيرفر";
+            errorMsg.style.display = 'block';
+        } finally {
+            btn.innerText = "ابدأ السهرة 🚀";
+            btn.disabled = false;
+        }
+    }
+
+    // --- Startup Logic (Replaces window.onload) ---
+    window.onload = function() {
+        // Check for existing session
+        const token = localStorage.getItem('hn_token');
+        
+        if(token) {
+            // User is already logged in
+            show('dashboard', false);
+        } else {
+            // User is new -> Show Landing Page
+            // IMPORTANT: Make sure you add the Landing Page HTML I gave you previously
+            const landing = document.getElementById('landing');
+            if(landing) {
+                landing.style.display = 'flex';
+                setTimeout(()=>landing.classList.add('active'), 10);
+            } else {
+                // Fallback if Landing HTML is missing
+                show('login', false);
+            }
+        }
+        
+        // Restore Game States (Catch Me Logic)
+        // (Moved from your old window.onload)
+        setTimeout(() => {
+            const savedP1 = localStorage.getItem('hn_catch_p1');
+            const savedP2 = localStorage.getItem('hn_catch_p2');
+            const savedTurn = localStorage.getItem('hn_catch_turn');
+            if(typeof catchPlayers !== 'undefined') {
+                if(savedP1) catchPlayers[0].pos = parseInt(savedP1);
+                if(savedP2) catchPlayers[1].pos = parseInt(savedP2);
+                if(savedTurn) cTurn = parseInt(savedTurn);
+            }
+        }, 500);
+    };   
         // ==========================================
         // 1. ENGINE & DATA (Updated with Shuffle)
         // ==========================================
@@ -2257,42 +2426,6 @@ prizes: [
         // ==========================================
         let currentQ = [];
         let activeStage = "";
-
-        // دالة البدء (بتتنده لما يدوس على زرار الترحيب)
-        function initApp() {
-            // 1. تفعيل محرك الصوت (دي الخطوة اللي بتسلك السماعات)
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            // تشغيل صوت خفيف للتأكيد
-            try { playSound('click'); } catch(e) {}
-
-            // 2. إخفاء شاشة الترحيب السوداء
-            const overlay = document.getElementById('welcome-overlay');
-            overlay.style.opacity = '0'; // تختفي ببطء
-            setTimeout(() => {
-                overlay.style.display = 'none'; // تتشال خالص
-            }, 500);
-
-            // 3. التوجيه (لو مسجل يدخل، لو لأ يروح لشاشة الكود)
-            if(localStorage.getItem('isLoggedIn') === 'true') {
-                show('dashboard', false);
-            } else {
-                show('login', false);
-            }
-        }
-
-        // تحميل البيانات الصامت (بيشتغل في الخلفية أول ما الموقع يفتح)
-        window.onload = function() {
-            // استرجاع تقدم لعبة Catch Me المحفوظ
-            const savedP1 = localStorage.getItem('hn_catch_p1');
-            const savedP2 = localStorage.getItem('hn_catch_p2');
-            const savedTurn = localStorage.getItem('hn_catch_turn');
-            
-            if(savedP1) catchPlayers[0].pos = parseInt(savedP1);
-            if(savedP2) catchPlayers[1].pos = parseInt(savedP2);
-            if(savedTurn) cTurn = parseInt(savedTurn);
-        };
         
         function show(id, withSound = true) {
             if(withSound) try{ playSound('click'); }catch(e){}
@@ -2303,16 +2436,6 @@ prizes: [
                 }
             });
             const el = document.getElementById(id); el.style.display = 'flex'; setTimeout(()=>el.classList.add('active'), 10);
-        }
-
-        function login() {
-            const val = document.getElementById('pass').value;
-            if(btoa(val) === "MTIzNA==" || btoa(val) === "SE9U") { 
-                localStorage.setItem('isLoggedIn', 'true');
-                show('dashboard');
-            } else {
-                document.getElementById('error').style.display='block';
-            }
         }
 
         function goHome() { show('dashboard'); }
@@ -2612,3 +2735,4 @@ prizes: [
     </script>
 </body>
 </html>
+
