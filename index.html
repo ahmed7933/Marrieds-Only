@@ -2377,9 +2377,16 @@ async function secureLogin() {
     errorMsg.style.display = "none";
 
     try {
-        // الاتصال بالسيرفر
-        const response = await fetch(`${APPS_SCRIPT_URL}?pass=${encodeURIComponent(password)}`);
-        const data = await response.json();
+// الاتصال بالسيرفر بطريقة POST الآمنة
+const response = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    // بنبعت البيانات نص عادي عشان نتفادى مشاكل جوجل CORS المعقدة
+    // السيرفر هيفك التشفير ده بدالة JSON.parse
+    body: JSON.stringify({ pass: password }), 
+    headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+    },
+});        const data = await response.json();
 
         if (data.allowed) {
             // نجاح الدخول
@@ -2700,5 +2707,6 @@ async function secureLogin() {
     </script>
 </body>
 </html>
+
 
 
