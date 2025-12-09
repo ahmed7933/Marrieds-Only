@@ -2363,53 +2363,58 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1dfXB3nmiubr8
 async function secureLogin() {
     const input = document.getElementById('pass');
     const btn = document.getElementById('loginBtn');
-    const btnText = document.getElementById('btnText');
-    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btnText') || btn; // تعديل بسيط عشان لو العنصر مش موجود
+    const spinner = document.getElementById('spinner'); // تأكد إن العنصر ده موجود في HTML
     const errorMsg = document.getElementById('error');
     const password = input.value.trim();
 
     if (!password) return;
 
-    // تشغيل وضع التحميل
+    // 1. تشغيل وضع التحميل
     btn.disabled = true;
-    btnText.innerText = "جاري التحقق...";
-    spinner.style.display = "inline-block";
+    if(btnText.innerText) btnText.innerText = "جاري التحقق...";
+    if(spinner) spinner.style.display = "inline-block";
     errorMsg.style.display = "none";
 
+    console.log("🚀 جاري الاتصال بـ:", APPS_SCRIPT_URL); // عشان نشوف في الكونسول
+
     try {
-// الاتصال بالسيرفر بطريقة POST الآمنة
-const response = await fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    // بنبعت البيانات نص عادي عشان نتفادى مشاكل جوجل CORS المعقدة
-    // السيرفر هيفك التشفير ده بدالة JSON.parse
-    body: JSON.stringify({ pass: password }), 
-    headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-    },
-});        const data = await response.json();
+        // 2. المحاولة بطريقة POST المعدلة
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ pass: password }),
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8", // ده ضروري جداً لجوجل
+            },
+        });
+
+        const data = await response.json();
+        console.log("✅ الرد وصل:", data);
 
         if (data.allowed) {
-            // نجاح الدخول
             localStorage.setItem('isLoggedIn', 'true');
             show('dashboard');
         } else {
-            // فشل الدخول
             errorMsg.style.display = "block";
-            errorMsg.innerText = "⚠️ الكود خاطئ أو الاشتراك غير مفعل";
+            errorMsg.innerText = "⚠️ الكود غير صحيح أو غير مفعل";
             input.style.animation = "shake 0.3s";
             setTimeout(() => input.style.animation = "", 300);
         }
+
     } catch (err) {
+        console.error("❌ خطأ في الاتصال:", err);
         errorMsg.style.display = "block";
-        errorMsg.innerText = "⚠️ تأكد من اتصال الإنترنت";
+        errorMsg.innerText = "⚠️ خطأ في الاتصال، جرب تاني";
+        
+        // لو الطريقة دي فشلت، جرب ترجع للطريقة القديمة مؤقتاً للتأكد
+        // fallbackToGet(password); 
     } finally {
-        // إرجاع الزرار لطبيعته
+        // 3. إرجاع الزرار لطبيعته
         btn.disabled = false;
-        btnText.innerText = "ابدأ السهرة 🚀";
-        spinner.style.display = "none";
+        if(btnText.innerText) btnText.innerText = "ابدأ السهرة 🚀";
+        if(spinner) spinner.style.display = "none";
     }
 }
-
         function goHome() { show('dashboard'); }
         function openGuide() { try{playSound('click');}catch(e){} document.getElementById('modal-guide').classList.add('show'); }
         function closeGuide() { try{playSound('click');}catch(e){} document.getElementById('modal-guide').classList.remove('show'); }
@@ -2707,6 +2712,7 @@ const response = await fetch(APPS_SCRIPT_URL, {
     </script>
 </body>
 </html>
+
 
 
 
